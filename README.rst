@@ -16,8 +16,9 @@ Mountain Tapir Collage Maker
 Mountain Tapir Collage Maker is a tool for combining images into collages.
 
 * Free software: `GPLv3 license`_
-.. _GPLv3 license: https://opensource.org/licenses/GPL-3.0
 * Documentation: https://mountain_tapir.readthedocs.org.
+
+.. _GPLv3 license: https://opensource.org/licenses/GPL-3.0
 
 Features
 --------
