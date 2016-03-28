@@ -27,10 +27,16 @@ Features
 * Graphical interface gives a preview of the finished collage.
 * Multiplatform (in theory).
 
+.. image:: exampleCollage.jpg
+        :scale: 35 %
+        :target: _images/exampleCollage.jpg
+
 Credits
 ---------
 
-This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
+This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template. The photos used in the screenshot, and the screenshot itself are by tttppp_ and licensed under a Creative Commons Attribution 4.0 International License (cc-by-4.0_).
 
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
+.. _tttppp: https://github.com/tttppp
+.. _cc-by-4.0: http://creativecommons.org/licenses/by/4.0/
