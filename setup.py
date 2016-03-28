@@ -53,7 +53,7 @@ setup(
                  'mountain_tapir'},
     include_package_data=True,
     install_requires=requirements,
-    license="ISCL",
+    license="GPLv3",
     zip_safe=False,
     keywords='mountain_tapir',
     classifiers=[
