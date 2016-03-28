@@ -27,9 +27,7 @@ Features
 * Graphical interface gives a preview of the finished collage.
 * Multiplatform (in theory).
 
-.. image:: exampleCollage.jpg
-        :scale: 35 %
-        :target: _images/exampleCollage.jpg
+.. image:: docs/exampleCollage.jpg
 
 Credits
 ---------
