@@ -23,7 +23,10 @@ class Config:
         self.config = ConfigParser.RawConfigParser()
         self.config.read('mountain_tapir.properties')
     def get(self, section, key, default = None):
-        value = self.config.get(section, key)
+        try:
+            value = self.config.get(section, key)
+        except ConfigParser.NoSectionError:
+            value = default
         if value == None:
             value = default
         return value

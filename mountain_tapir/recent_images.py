@@ -18,6 +18,9 @@
 
 from Tkinter import *
 
+THUMBNAIL_WIDTH = 60
+THUMBNAIL_HEIGHT = 60
+
 class RecentImages:
     def __init__(self, parent, controller):
         self.myParent = parent

@@ -23,13 +23,11 @@ from controller import Controller
 from menu import Menu
 from model import Model
 from preview import Preview
+from recent_images import RecentImages
 from ui_vars import UIVars
 
 INITIAL_WINDOW_WIDTH = 1060
 INITIAL_WINDOW_HEIGHT = 500
-
-THUMBNAIL_WIDTH = 60
-THUMBNAIL_HEIGHT = 60
 
 class MountainTapir:
     def __init__(self, parent):
@@ -53,9 +51,11 @@ class MountainTapir:
         
         self.controller.initialise(self.preview, self.recentImages)
 
-
-root = Tk()
-MountainTapir(root)
-print "Ready to start executing the event loop."
-root.mainloop()
-print "Finished       executing the event loop."
+if __name__ == "__main__":
+    root = Tk()
+    MountainTapir(root)
+    print 'Ready to start executing the event loop.'
+    root.mainloop()
+    print 'Finished       executing the event loop.'
+else:
+    print('Running tests...')
