@@ -36,7 +36,7 @@ class MountainTapir:
         self.myParent = parent
         screenWidth = parent.winfo_screenwidth()
         screenHeight = parent.winfo_screenheight()
-        parent.geometry('%dx%d+%d+%d'%(INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT, screenWidth/2 - INITIAL_WINDOW_WIDTH/2, screenHeight/2 - INITIAL_WINDOW_HEIGHT/2))
+        parent.geometry('{:d}x{:d}+{:d}+{:d}'.format(INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT, screenWidth/2 - INITIAL_WINDOW_WIDTH/2, screenHeight/2 - INITIAL_WINDOW_HEIGHT/2))
         
         self.uiVars = UIVars(self.myParent)
         self.model = Model(self.config)
@@ -51,11 +51,7 @@ class MountainTapir:
         
         self.controller.initialise(self.preview, self.recentImages)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     root = Tk()
     MountainTapir(root)
-    print 'Ready to start executing the event loop.'
     root.mainloop()
-    print 'Finished       executing the event loop.'
-else:
-    print('Running tests...')

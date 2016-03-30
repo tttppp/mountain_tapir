@@ -37,7 +37,7 @@ class RegionMaker:
         elif model.algorithm == Algorithm.FRAME:
             return RegionMaker.makeFrameRegions(model)
         else:
-            print 'Unsupported algorithm: ' + model.algorithm
+            print('Unsupported algorithm: {}'.format(model.algorithm))
     @staticmethod
     def makeCollageRegions(model):
         """Start with the whole area as a region. Each iteration pick the 'worst' region and split it either horizontally

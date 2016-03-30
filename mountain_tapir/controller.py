@@ -30,7 +30,7 @@ from region_maker import RegionMaker
 from tool import Tool
 
 def randColor():
-    return '#'+('%06x'%randrange(0,16777215))
+    return '#{:06x}'.format(randrange(0,16777215))
 
 class Controller:
     def __init__(self, model, uiVars):
@@ -45,7 +45,7 @@ class Controller:
         self.selectedImage = None
         self.selectedCanvas = None
         self.selectedRegion = None
-        print tool
+        print(tool)
     def selectPlaceTool(self, image):
         self.selectTool(Tool.PLACE)
         self.selectedImage = image
@@ -53,7 +53,7 @@ class Controller:
         self.model.algorithm = algorithm
         self.redraw()
     def shuffle(self):
-        print 'Shuffle selected'
+        print('Shuffle selected')
         images = self.model.regionToImageFile.values()
         self.model.regionToImageFile.clear()
         regions = set(self.model.regions)
@@ -67,20 +67,20 @@ class Controller:
             self.putImageInPreviewRegion(imageFile, canvas, region)
             usedRegions.add(region)
     def save(self):
-        print 'Save selected'
+        print('Save selected')
         fileName = asksaveasfile()
         if fileName != None:
             outputImage = Image.new("RGB", (self.model.width, self.model.height))
             for region in self.model.regions:
                 imageFile = self.model.regionToImageFile[region]
                 if imageFile == None:
-                    print 'Warning: Region without image %s'%(region,)
+                    print('Warning: Region without image {}'.format(region))
                     continue
                 image = imageFile.getImageObject((region[2], region[3]))
                 outputImage.paste(image, (region[0], region[1]))
             outputImage.save(fileName)
     def addRegions(self, delta):
-        print 'Change if not going below one'
+        print('Change if not going below one')
         if self.model.regionCount + delta > 0:
             self.model.regionCount += delta
             self.uiVars.regionsVar.set(self.model.regionCount)
@@ -119,7 +119,7 @@ class Controller:
         if self.model.selectedTool == Tool.LOAD:
             fileName = askopenfilename(parent=canvas, initialdir=self.model.currentDirectory, title='Choose an image.')
             if fileName == '':
-                print 'Cancelled opening image'
+                print('Cancelled opening image')
                 return
             self.model.currentDirectory = path.dirname(fileName)
             imageFile = ImageFile(fileName)
@@ -149,7 +149,7 @@ class Controller:
         elif self.model.selectedTool == Tool.EMPTY:
             self.putImageInPreviewRegion(None, canvas, region)
         else:
-            print 'Currently selected tool is not supported yet: %d'%self.model.selectedTool
+            print('Currently selected tool is not supported yet: {}'.format(self.model.selectedTool))
     def updateWidth(self, event):
         newWidth = int(self.uiVars.widthVar.get())
         if newWidth != self.model.width:
@@ -173,5 +173,4 @@ class Controller:
             self.model.regionToImageFile[newRegion] = oldRegionToImageFile[oldRegion]
             self.model.regionToCanvas[newRegion] = oldRegionToCanvas[oldRegion]
     def adjustPreviewSize(self, event=None):
-        print 'Ok%d %d'%(self.preview.previewContainer.winfo_width(), self.preview.previewContainer.winfo_height())
         self.refresh()
