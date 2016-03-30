@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from Tkinter import Tk, Frame, BOTH, YES
+import Tkinter as TK
 
 from config import Config
 from controller import Controller
@@ -42,8 +42,8 @@ class MountainTapir:
         self.model = Model(self.config)
         self.controller = Controller(self.model, self.uiVars)
         
-        self.appContainer = Frame(self.myParent)
-        self.appContainer.pack(fill=BOTH, expand=YES)
+        self.appContainer = TK.Frame(self.myParent)
+        self.appContainer.pack(fill=TK.BOTH, expand=TK.YES)
 
         self.recentImages = RecentImages(self.appContainer, self.controller)
         self.preview = Preview(self.appContainer, self.controller)
@@ -52,6 +52,6 @@ class MountainTapir:
         self.controller.initialise(self.preview, self.recentImages)
 
 if __name__ == '__main__':
-    root = Tk()
+    root = TK.Tk()
     MountainTapir(root)
     root.mainloop()

@@ -36,11 +36,8 @@ class TestMountain_tapir(unittest.TestCase):
 
     def tearDown(self):
         pass
-    @mock.patch('mountain_tapir.mountain_tapir.Tk')
-    @mock.patch('mountain_tapir.mountain_tapir.Frame')
-    @mock.patch('mountain_tapir.mountain_tapir.BOTH')
-    @mock.patch('mountain_tapir.mountain_tapir.YES')
-    def test_000_something(self, mockTk, mockFrame, mockBOTH, mockYES):
+    @mock.patch('mountain_tapir.mountain_tapir.TK')
+    def test_000_something(self, mockTK):
         pass
 
 if __name__ == '__main__':
