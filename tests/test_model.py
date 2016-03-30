@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 # Mountain Tapir Collage Maker is a tool for combining images into collages.
@@ -16,21 +17,29 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from collections import defaultdict
+"""
+test_model
+----------------------------------
 
-from algorithm import Algorithm
-from constants import *
-from tool import Tool
+Tests for `model` module.
+"""
 
-class Model:
-    def __init__(self, config):
-        self.selectedTool = Tool.LOAD
-        self.regionCount = INITIAL_REGIONS
-        self.width = INITIAL_WIDTH
-        self.height = INITIAL_HEIGHT
-        self.algorithm = Algorithm.COLLAGE
-        self.regions = None
-        self.imageFiles = []
-        self.regionToImageFile = defaultdict(lambda : None)
-        self.regionToCanvas = defaultdict(lambda : None)
-        self.currentDirectory = config.get('FILE', 'initialdirectory', '/')
+import unittest
+from mock import Mock
+
+from mountain_tapir import model
+
+class TestModel(unittest.TestCase):
+    def testCurrentDirectorySet(self):
+        """Test that the config object is used to set the current directory."""
+        mockConfig = Mock(name = "Config")
+        mockConfig.get.return_value='currentDirectory'
+        
+        m = model.Model(mockConfig)
+        
+        mockConfig.get.assert_called_with('FILE', 'initialdirectory', '/')
+        assert m.currentDirectory == 'currentDirectory'
+
+if __name__ == '__main__':
+    import sys
+    sys.exit(unittest.main())
