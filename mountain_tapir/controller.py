@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from Tkinter import *
+from Tkinter import Canvas, Frame
 
 from collections import defaultdict
 from os import path
@@ -70,13 +70,13 @@ class Controller:
         print('Save selected')
         fileName = asksaveasfile()
         if fileName != None:
-            outputImage = Image.new("RGB", (self.model.width, self.model.height))
+            outputImage = Image.new('RGB', (self.model.width, self.model.height))
             for region in self.model.regions:
                 imageFile = self.model.regionToImageFile[region]
                 if imageFile == None:
                     print('Warning: Region without image {}'.format(region))
                     continue
-                image = imageFile.getImageObject((region[2], region[3]))
+                image = imageFile.getImageObject((region[2], region[3]), 'export')
                 outputImage.paste(image, (region[0], region[1]))
             outputImage.save(fileName)
     def addRegions(self, delta):

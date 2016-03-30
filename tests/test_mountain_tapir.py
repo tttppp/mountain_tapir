@@ -25,9 +25,9 @@ Tests for `mountain_tapir` module.
 """
 
 import unittest
+import mock
 
 from mountain_tapir import mountain_tapir
-
 
 class TestMountain_tapir(unittest.TestCase):
 
@@ -36,10 +36,12 @@ class TestMountain_tapir(unittest.TestCase):
 
     def tearDown(self):
         pass
-
-    def test_000_something(self):
+    @mock.patch('mountain_tapir.mountain_tapir.Tk')
+    @mock.patch('mountain_tapir.mountain_tapir.Frame')
+    @mock.patch('mountain_tapir.mountain_tapir.BOTH')
+    @mock.patch('mountain_tapir.mountain_tapir.YES')
+    def test_000_something(self, mockTk, mockFrame, mockBOTH, mockYES):
         pass
-
 
 if __name__ == '__main__':
     import sys

@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from Tkinter import *
+from Tkinter import Frame, Button, Label, Entry, BOTTOM, LEFT, RIGHT
 
 from algorithm import Algorithm
 from tool import Tool

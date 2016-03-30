@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from Tkinter import *
+from Tkinter import ALL
 
 from collections import defaultdict
 from PIL import Image, ImageTk
@@ -27,13 +27,13 @@ class ImageFile:
         # We need to store all the images otherwise they're garbage collected.
         self.images = defaultdict(list)
     def makeImage(self, purpose, dimensions, canvas):
-        image = self.getImageObject(dimensions)
+        image = self.getImageObject(dimensions, purpose)
         if image != None:
             photoImage = ImageTk.PhotoImage(image)
             self.images[purpose].append(photoImage)
             canvas.create_image(0, 0, image=photoImage, anchor="nw")
             canvas.config(scrollregion=canvas.bbox(ALL))
-    def getImageObject(self, dimensions):
+    def getImageObject(self, dimensions, purpose):
         try:
             image = Image.open(self.fileName)
         except IOError:
