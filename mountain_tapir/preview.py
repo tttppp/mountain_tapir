@@ -18,7 +18,7 @@
 
 from Tkinter import Frame, TOP, BOTH, YES
 
-from constants import *
+from constants import Constants
 
 class Preview:
     def __init__(self, parent, controller):
@@ -28,7 +28,7 @@ class Preview:
         self.previewContainer.pack(side=TOP, fill=BOTH, expand=YES)
         self.previewContainer.bind('<Configure>', controller.adjustPreviewSize)
         
-        self.createPreviewFrame(INITIAL_WIDTH, INITIAL_HEIGHT)
+        self.createPreviewFrame(Constants.INITIAL_WIDTH, Constants.INITIAL_HEIGHT)
     def clearAndCreateFrame(self, width, height):
         self.previewFrame.destroy()
         self.createPreviewFrame(width, height)

@@ -18,10 +18,10 @@
 
 from Tkinter import IntVar
 
-from constants import *
+from constants import Constants
 
 class UIVars:
     def __init__(self, parent):
-        self.widthVar = IntVar(parent, INITIAL_WIDTH)
-        self.heightVar = IntVar(parent, INITIAL_HEIGHT)
-        self.regionsVar = IntVar(parent, INITIAL_REGIONS)
+        self.widthVar = IntVar(parent, Constants.INITIAL_WIDTH)
+        self.heightVar = IntVar(parent, Constants.INITIAL_HEIGHT)
+        self.regionsVar = IntVar(parent, Constants.INITIAL_REGIONS)

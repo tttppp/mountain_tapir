@@ -19,15 +19,15 @@
 from collections import defaultdict
 
 from algorithm import Algorithm
-from constants import *
+from constants import Constants
 from tool import Tool
 
 class Model:
     def __init__(self, config):
         self.selectedTool = Tool.LOAD
-        self.regionCount = INITIAL_REGIONS
-        self.width = INITIAL_WIDTH
-        self.height = INITIAL_HEIGHT
+        self.regionCount = Constants.INITIAL_REGIONS
+        self.width = Constants.INITIAL_WIDTH
+        self.height = Constants.INITIAL_HEIGHT
         self.algorithm = Algorithm.COLLAGE
         self.regions = None
         self.imageFiles = []
