@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from Tkinter import Frame, Button, Label, Entry, BOTTOM, LEFT, RIGHT
+import Tkinter as TK
 
 from algorithm import Algorithm
 from tool import Tool
@@ -25,51 +25,51 @@ class Menu:
     def __init__(self, parent, controller):
         self.myParent = parent
         
-        self.menuFrame = Frame(self.myParent)
-        self.menuFrame.pack(side=BOTTOM)
+        self.menuFrame = TK.Frame(self.myParent)
+        self.menuFrame.pack(side=TK.BOTTOM)
         
-        self.loadToolButton = Button(self.menuFrame, text='Load', command=lambda : controller.selectTool(Tool.LOAD))
-        self.loadToolButton.pack(side=LEFT)
+        self.loadToolButton = TK.Button(self.menuFrame, text='Load', command=lambda : controller.selectTool(Tool.LOAD))
+        self.loadToolButton.pack(side=TK.LEFT)
         
-        self.swapToolButton = Button(self.menuFrame, text='Swap', command=lambda : controller.selectTool(Tool.SWAP))
-        self.swapToolButton.pack(side=LEFT)
+        self.swapToolButton = TK.Button(self.menuFrame, text='Swap', command=lambda : controller.selectTool(Tool.SWAP))
+        self.swapToolButton.pack(side=TK.LEFT)
         
-        self.emptyToolButton = Button(self.menuFrame, text='Empty', command=lambda : controller.selectTool(Tool.EMPTY))
-        self.emptyToolButton.pack(side=LEFT)
+        self.emptyToolButton = TK.Button(self.menuFrame, text='Empty', command=lambda : controller.selectTool(Tool.EMPTY))
+        self.emptyToolButton.pack(side=TK.LEFT)
         
-        self.shuffleButton = Button(self.menuFrame, text='Shuffle', command=controller.shuffle)
-        self.shuffleButton.pack(side=LEFT)
+        self.shuffleButton = TK.Button(self.menuFrame, text='Shuffle', command=controller.shuffle)
+        self.shuffleButton.pack(side=TK.LEFT)
         
-        self.collageAlgorithmButton = Button(self.menuFrame, text='Collage', command=lambda : controller.setAlgorithm(Algorithm.COLLAGE))
-        self.collageAlgorithmButton.pack(side=LEFT)
-        self.gridAlgorithmButton = Button(self.menuFrame, text='Grid', command=lambda : controller.setAlgorithm(Algorithm.GRID))
-        self.gridAlgorithmButton.pack(side=LEFT)
-        self.frameAlgorithmButton = Button(self.menuFrame, text='Frame', command=lambda : controller.setAlgorithm(Algorithm.FRAME))
-        self.frameAlgorithmButton.pack(side=LEFT)
+        self.collageAlgorithmButton = TK.Button(self.menuFrame, text='Collage', command=lambda : controller.setAlgorithm(Algorithm.COLLAGE))
+        self.collageAlgorithmButton.pack(side=TK.LEFT)
+        self.gridAlgorithmButton = TK.Button(self.menuFrame, text='Grid', command=lambda : controller.setAlgorithm(Algorithm.GRID))
+        self.gridAlgorithmButton.pack(side=TK.LEFT)
+        self.frameAlgorithmButton = TK.Button(self.menuFrame, text='Frame', command=lambda : controller.setAlgorithm(Algorithm.FRAME))
+        self.frameAlgorithmButton.pack(side=TK.LEFT)
         
-        self.widthLabel = Label(self.menuFrame, text='Width:')
-        self.widthLabel.pack(side=LEFT)
-        self.widthEntry = Entry(self.menuFrame, textvariable=controller.uiVars.widthVar)
+        self.widthLabel = TK.Label(self.menuFrame, text='Width:')
+        self.widthLabel.pack(side=TK.LEFT)
+        self.widthEntry = TK.Entry(self.menuFrame, textvariable=controller.uiVars.widthVar)
         self.widthEntry.bind('<FocusOut>', controller.updateWidth)
         self.widthEntry.bind('<Return>', controller.updateWidth)
         self.widthEntry.bind('<KP_Enter>', controller.updateWidth)
-        self.widthEntry.pack(side=LEFT)
-        self.heightLabel = Label(self.menuFrame, text='Height:')
-        self.heightLabel.pack(side=LEFT)
-        self.heightEntry = Entry(self.menuFrame, textvariable=controller.uiVars.heightVar)
+        self.widthEntry.pack(side=TK.LEFT)
+        self.heightLabel = TK.Label(self.menuFrame, text='Height:')
+        self.heightLabel.pack(side=TK.LEFT)
+        self.heightEntry = TK.Entry(self.menuFrame, textvariable=controller.uiVars.heightVar)
         self.heightEntry.bind('<FocusOut>', controller.updateHeight)
         self.heightEntry.bind('<Return>', controller.updateHeight)
         self.heightEntry.bind('<KP_Enter>', controller.updateHeight)
-        self.heightEntry.pack(side=LEFT)
+        self.heightEntry.pack(side=TK.LEFT)
         
-        self.minusRegionButton = Button(self.menuFrame, text='-', command=lambda : controller.addRegions(-1))
-        self.minusRegionButton.pack(side=LEFT)
-        self.regionsDisplay = Label(self.menuFrame, textvariable=controller.uiVars.regionsVar)
-        self.regionsDisplay.pack(side=LEFT)
-        self.regionsLabel = Label(self.menuFrame, text='regions')
-        self.regionsLabel.pack(side=LEFT)
-        self.plusRegionButton = Button(self.menuFrame, text='+', command=lambda : controller.addRegions(1))
-        self.plusRegionButton.pack(side=LEFT)
+        self.minusRegionButton = TK.Button(self.menuFrame, text='-', command=lambda : controller.addRegions(-1))
+        self.minusRegionButton.pack(side=TK.LEFT)
+        self.regionsDisplay = TK.Label(self.menuFrame, textvariable=controller.uiVars.regionsVar)
+        self.regionsDisplay.pack(side=TK.LEFT)
+        self.regionsLabel = TK.Label(self.menuFrame, text='regions')
+        self.regionsLabel.pack(side=TK.LEFT)
+        self.plusRegionButton = TK.Button(self.menuFrame, text='+', command=lambda : controller.addRegions(1))
+        self.plusRegionButton.pack(side=TK.LEFT)
         
-        self.saveButton = Button(self.menuFrame, text='Save', command=controller.save)
-        self.saveButton.pack(side=RIGHT)
+        self.saveButton = TK.Button(self.menuFrame, text='Save', command=controller.save)
+        self.saveButton.pack(side=TK.RIGHT)

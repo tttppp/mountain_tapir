@@ -16,12 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from Tkinter import IntVar
+import Tkinter as TK
 
 from constants import Constants
 
 class UIVars:
     def __init__(self, parent):
-        self.widthVar = IntVar(parent, Constants.INITIAL_WIDTH)
-        self.heightVar = IntVar(parent, Constants.INITIAL_HEIGHT)
-        self.regionsVar = IntVar(parent, Constants.INITIAL_REGIONS)
+        self.widthVar = TK.IntVar(parent, Constants.INITIAL_WIDTH)
+        self.heightVar = TK.IntVar(parent, Constants.INITIAL_HEIGHT)
+        self.regionsVar = TK.IntVar(parent, Constants.INITIAL_REGIONS)

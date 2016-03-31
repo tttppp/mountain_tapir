@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from Tkinter import ALL
+import Tkinter as TK
 
 from collections import defaultdict
 from PIL import Image, ImageTk
@@ -32,7 +32,7 @@ class ImageFile:
             photoImage = ImageTk.PhotoImage(image)
             self.images[purpose].append(photoImage)
             canvas.create_image(0, 0, image=photoImage, anchor="nw")
-            canvas.config(scrollregion=canvas.bbox(ALL))
+            canvas.config(scrollregion=canvas.bbox(TK.ALL))
     def getImageObject(self, dimensions, purpose):
         try:
             image = Image.open(self.fileName)

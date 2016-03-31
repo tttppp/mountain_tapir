@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from Tkinter import Frame, TOP, BOTH, YES
+import Tkinter as TK
 
 from constants import Constants
 
@@ -24,8 +24,8 @@ class Preview:
     def __init__(self, parent, controller):
         self.myParent = parent
         
-        self.previewContainer = Frame(self.myParent)
-        self.previewContainer.pack(side=TOP, fill=BOTH, expand=YES)
+        self.previewContainer = TK.Frame(self.myParent)
+        self.previewContainer.pack(side=TK.TOP, fill=TK.BOTH, expand=TK.YES)
         self.previewContainer.bind('<Configure>', controller.adjustPreviewSize)
         
         self.createPreviewFrame(Constants.INITIAL_WIDTH, Constants.INITIAL_HEIGHT)
@@ -33,5 +33,5 @@ class Preview:
         self.previewFrame.destroy()
         self.createPreviewFrame(width, height)
     def createPreviewFrame(self, width, height):
-        self.previewFrame = Frame(self.previewContainer, width=width, height=height)
+        self.previewFrame = TK.Frame(self.previewContainer, width=width, height=height)
         self.previewFrame.pack()

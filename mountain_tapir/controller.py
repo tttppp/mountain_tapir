@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from Tkinter import Canvas, Frame
+import Tkinter as TK
 
 from collections import defaultdict
 from os import path
@@ -98,8 +98,8 @@ class Controller:
         self.preview.clearAndCreateFrame(width, height)
         for region in self.model.regions:
             previewRegion = (region[0]*width/self.model.width, region[1]*height/self.model.height, region[2]*width/self.model.width, region[3]*height/self.model.height)
-            imageCell = Frame(self.preview.previewFrame, width=previewRegion[2], height=previewRegion[3])
-            canvas = Canvas(imageCell, width=previewRegion[2], height=previewRegion[3], background=randColor())
+            imageCell = TK.Frame(self.preview.previewFrame, width=previewRegion[2], height=previewRegion[3])
+            canvas = TK.Canvas(imageCell, width=previewRegion[2], height=previewRegion[3], background=randColor())
             canvas.pack()
             canvas.bind('<Button-1>',lambda e, c=canvas, r=region: self.clicked(c, r))
             imageCell.place(x=previewRegion[0], y=previewRegion[1])
