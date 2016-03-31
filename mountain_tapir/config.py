@@ -16,16 +16,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import ConfigParser
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser
 
 class Config:
     def __init__(self):
-        self.config = ConfigParser.RawConfigParser()
+        self.config = configparser.RawConfigParser()
         self.config.read('mountain_tapir.properties')
     def get(self, section, key, default = None):
         try:
             value = self.config.get(section, key)
-        except ConfigParser.NoSectionError:
+        except configparser.NoSectionError:
             value = default
         if value == None:
             value = default
