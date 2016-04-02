@@ -62,16 +62,16 @@ class ImageFile:
             return None
         originalDimensions = image.size
         if originalDimensions[0] * dimensions[1] > originalDimensions[1] * dimensions[0]:
-            resizeWidth = (originalDimensions[0] * dimensions[1]) / originalDimensions[1]
+            resizeWidth = int((originalDimensions[0] * dimensions[1]) / originalDimensions[1])
             resizeHeight = dimensions[1]
             resizeDimensions = (resizeWidth, resizeHeight)
         else:
             resizeWidth = dimensions[0]
-            resizeHeight = (originalDimensions[1] * dimensions[0]) / originalDimensions[0]
+            resizeHeight = int((originalDimensions[1] * dimensions[0]) / originalDimensions[0])
             resizeDimensions = (resizeWidth, resizeHeight)
         image = image.resize(resizeDimensions, Image.ANTIALIAS)
         middle = (image.size[0] / 2, image.size[1] / 2)
-        left = middle[0] - dimensions[0] / 2
-        top = middle[1] - dimensions[1] / 2
+        left = middle[0] - int(dimensions[0] / 2)
+        top = middle[1] - int(dimensions[1] / 2)
         box = (left, top, left + dimensions[0], top + dimensions[1])
         return image.crop(box)

@@ -36,18 +36,78 @@ class TestImageFile(unittest.TestCase):
     def testMakeImage(self, mockGetImageObject, mockImageTk, mockImage, mockTK):
         """Test that the properties file is loaded when the Config is initialised."""
         mockCanvas = mock.Mock(name = "Canvas")
-        dimensions = (2,3)
+        dimensions = (2, 3)
         
-        mockPhotoImage = mock.Mock(name = "PhotoImage")
+        mockImageObject = mock.Mock(name = 'ImageObject')
+        mockGetImageObject.return_value = mockImageObject
+        mockPhotoImage = mock.Mock(name = 'PhotoImage')
         mockImageTk.PhotoImage.return_value = mockPhotoImage
         
         imageFile = image_file.ImageFile('file/path')
         imageFile.makeImage('purpose', dimensions, mockCanvas)
         
+        mockGetImageObject.assert_called_with((2,3), 'purpose')
+        mockImageTk.PhotoImage.assert_called_with(mockImageObject)
         assert mockPhotoImage in imageFile.images['purpose'], \
             'The new photo image was not added to the persisted images list'
         mockCanvas.create_image.assert_called_with(0, 0, image=mockPhotoImage, anchor="nw")
         mockCanvas.config.assert_called_with(scrollregion=mockCanvas.bbox())
+
+    @mock.patch('mountain_tapir.image_file.TK')
+    @mock.patch('mountain_tapir.image_file.Image')
+    @mock.patch('mountain_tapir.image_file.ImageTk')
+    def testGetImageObject_tooWide(self, mockImageTk, mockImage, mockTK):
+        """Test creating an image that needs to be cropped horizontally."""
+        mockPhotoImage = mock.Mock(name = "PhotoImage")
+        mockImageTk.PhotoImage.return_value = mockPhotoImage
+        mockImg = mock.Mock(name = 'Img')
+        mockImage.open.return_value = mockImg
+        mockImg.size = (20, 30)
+        mockResizedImg = mock.Mock(name = 'ResizedImg')
+        mockImg.resize.return_value = mockResizedImg
+        mockResizedImg.size = (26, 40)
+        mockResizedImg.crop.return_value = 'Final image'
+
+        imageFile = image_file.ImageFile('file/path')
+        image = imageFile.getImageObject((10, 40), 'purpose')
+        
+        mockImg.resize.assert_called_with((26, 40), mockImage.ANTIALIAS)
+        mockResizedImg.crop.assert_called_with((8, 0, 18, 40))
+        assert image == 'Final image'
+
+    @mock.patch('mountain_tapir.image_file.TK')
+    @mock.patch('mountain_tapir.image_file.Image')
+    @mock.patch('mountain_tapir.image_file.ImageTk')
+    def testGetImageObject_tooTall(self, mockImageTk, mockImage, mockTK):
+        """Test creating an image that needs to be cropped vertically."""
+        mockPhotoImage = mock.Mock(name = "PhotoImage")
+        mockImageTk.PhotoImage.return_value = mockPhotoImage
+        mockImg = mock.Mock(name = 'Img')
+        mockImage.open.return_value = mockImg
+        mockImg.size = (20, 30)
+        mockResizedImg = mock.Mock(name = 'ResizedImg')
+        mockImg.resize.return_value = mockResizedImg
+        mockResizedImg.size = (40, 60)
+        mockResizedImg.crop.return_value = 'Final image'
+
+        imageFile = image_file.ImageFile('file/path')
+        image = imageFile.getImageObject((40, 10), 'purpose')
+        
+        mockImg.resize.assert_called_with((40, 60), mockImage.ANTIALIAS)
+        mockResizedImg.crop.assert_called_with((0, 25, 40, 35))
+        assert image == 'Final image'
+
+    @mock.patch('mountain_tapir.image_file.TK')
+    @mock.patch('mountain_tapir.image_file.Image')
+    @mock.patch('mountain_tapir.image_file.ImageTk')
+    def testGetImageObject_notFound(self, mockImageTk, mockImage, mockTK):
+        """Test creating an image when the file couldn't be opened."""
+        mockImage.open.side_effect = IOError
+
+        imageFile = image_file.ImageFile('file/path')
+        image = imageFile.getImageObject((40, 10), 'purpose')
+        
+        assert image == None
 
 if __name__ == '__main__':
     import sys
