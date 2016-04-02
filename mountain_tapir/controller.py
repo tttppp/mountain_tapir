@@ -20,12 +20,15 @@ try:
     import tkinter as TK
 except ImportError:
     import Tkinter as TK
+try:
+    from tkinter.filedialog import askopenfilename, asksaveasfile
+except ImportError:
+    from tkFileDialog import askopenfilename, asksaveasfile
 
 from collections import defaultdict
 from os import path
 from PIL import Image
 from random import randrange, sample
-from tkFileDialog import askopenfilename, asksaveasfile
 
 from image_file import ImageFile
 from region_maker import RegionMaker
