@@ -39,7 +39,7 @@ class MountainTapir:
         self.myParent = parent
         screenWidth = parent.winfo_screenwidth()
         screenHeight = parent.winfo_screenheight()
-        parent.geometry('{:d}x{:d}+{:d}+{:d}'.format(INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT, screenWidth/2 - INITIAL_WINDOW_WIDTH/2, screenHeight/2 - INITIAL_WINDOW_HEIGHT/2))
+        parent.geometry('{:d}x{:d}+{:d}+{:d}'.format(INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT, int(screenWidth/2 - INITIAL_WINDOW_WIDTH/2), int(screenHeight/2 - INITIAL_WINDOW_HEIGHT/2)))
         
         self.uiVars = UIVars(self.myParent)
         self.model = Model(self.config)
