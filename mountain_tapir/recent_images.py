@@ -33,8 +33,8 @@ class RecentImages:
 
         self.createScrollFrame()
         
-        self.clearAll = TK.Button(self.recentImagesFrame, text='Clear', command=self.clearAll)
-        self.clearAll.pack(side=TK.RIGHT)
+        self.clearAllButton = TK.Button(self.recentImagesFrame, text='Clear', command=self.clearAll)
+        self.clearAllButton.pack(side=TK.RIGHT)
         
     def clearAll(self):
         for child in self.scrollFrame.winfo_children():
