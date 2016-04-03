@@ -32,9 +32,21 @@ class Preview:
         self.previewContainer.bind('<Configure>', controller.adjustPreviewSize)
         
         self.createPreviewFrame(Constants.INITIAL_WIDTH, Constants.INITIAL_HEIGHT)
+
     def clearAndCreateFrame(self, width, height):
+        """Clear the preview frame, then create a new one using the given dimensions.
+        
+        :param width: The width of the new frame.
+        :param height: The height of the new frame.
+        """
         self.previewFrame.destroy()
         self.createPreviewFrame(width, height)
+
     def createPreviewFrame(self, width, height):
+        """Create the preview frame using the given dimensions.
+        
+        :param width: The width of the new frame.
+        :param height: The height of the new frame.
+        """
         self.previewFrame = TK.Frame(self.previewContainer, width=width, height=height)
         self.previewFrame.pack()
