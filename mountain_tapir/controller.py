@@ -79,7 +79,7 @@ class Controller:
             for region in self.model.regions:
                 imageFile = self.model.regionToImageFile[region]
                 if imageFile == None:
-                    print('Warning: Region without image {}'.format(region))
+                    print('Warning: Region without image {0}'.format(region))
                     continue
                 image = imageFile.getImageObject((region[2], region[3]), 'export')
                 outputImage.paste(image, (region[0], region[1]))
@@ -154,7 +154,7 @@ class Controller:
         elif self.model.selectedTool == Tool.EMPTY:
             self.putImageInPreviewRegion(None, canvas, region)
         else:
-            print('Currently selected tool is not supported yet: {}'.format(self.model.selectedTool))
+            print('Currently selected tool is not supported yet: {0}'.format(self.model.selectedTool))
     def updateWidth(self, event):
         newWidth = int(self.uiVars.widthVar.get())
         if newWidth != self.model.width:

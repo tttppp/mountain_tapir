@@ -58,7 +58,7 @@ class ImageFile:
         try:
             image = Image.open(self.fileName)
         except IOError:
-            print('Error opening image for {}'.format(purpose))
+            print('Error opening image for {0}'.format(purpose))
             return None
         originalDimensions = image.size
         if originalDimensions[0] * dimensions[1] > originalDimensions[1] * dimensions[0]:
