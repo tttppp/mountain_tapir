@@ -56,9 +56,7 @@ class TestPreview(unittest.TestCase):
     @mock.patch('mountain_tapir.preview.TK')
     @mock.patch('mountain_tapir.preview.Preview.createPreviewFrame')
     def testClearAndCreateFrame(self, mockCreatePreviewFrame, mockTK):
-        """Test creating a new Preview object.
-        
-        This test also covers the createPreviewFrame method."""
+        """Test creating a new Preview object."""
         mockParent = mock.Mock(name = 'Parent')
         mockController = mock.Mock(name = 'Controller')
         
