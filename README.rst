@@ -4,14 +4,19 @@ Mountain Tapir Collage Maker
 
 .. image:: https://img.shields.io/pypi/v/mountain_tapir.svg
         :target: https://pypi.python.org/pypi/mountain_tapir
+        :alt: Latest Release
 
 .. image:: https://img.shields.io/travis/tttppp/mountain_tapir.svg
         :target: https://travis-ci.org/tttppp/mountain_tapir
+        :alt: Build Status
 
 .. image:: https://readthedocs.org/projects/mountain_tapir/badge/?version=latest
         :target: https://readthedocs.org/projects/mountain_tapir/?badge=latest
         :alt: Documentation Status
 
+.. image:: https://coveralls.io/repos/github/tttppp/mountain_tapir/badge.svg?branch=master
+        :target: https://coveralls.io/github/tttppp/mountain_tapir?branch=master
+        :alt: Coverage
 
 Mountain Tapir Collage Maker is a tool for combining images into collages.
 
