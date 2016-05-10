@@ -21,7 +21,7 @@ from random import randrange
 
 from algorithm import Algorithm
 
-TARGET_RATIO = 2/3
+TARGET_RATIO = 2.0/3
 UNACCEPTABLE_WIDTH=50
 UNACCEPTABLE_HEIGHT=50
 
