@@ -35,7 +35,7 @@ from region_maker import RegionMaker
 from tool import Tool
 
 def randColor():
-    return '#{:06x}'.format(randrange(0,16777215))
+    return '#{0:06x}'.format(randrange(0,16777215))
 
 class Controller:
     def __init__(self, model, uiVars):
