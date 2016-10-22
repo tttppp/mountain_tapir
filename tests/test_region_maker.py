@@ -62,6 +62,19 @@ class TestRegionMaker(unittest.TestCase):
         regions = region_maker.RegionMaker.makeRegions(mockModel)
         
         self.assertEqual(regions, [(0, 0, 500, 1000), (0, 1000, 500, 1000), (500, 0, 500, 1000), (500, 1000, 500, 1000)])
+        
+    def testMakeRegions_frame(self):
+        """Test generating some regions using the frame algorithm."""
+        mockModel = mock.Mock(name = 'Model')
+        mockModel.algorithm = algorithm.Algorithm.FRAME
+        mockModel.width = 1000
+        mockModel.height = 2000
+        mockModel.regionCount = 8
+
+        # Call the method under test.
+        regions = region_maker.RegionMaker.makeRegions(mockModel)
+        
+        self.assertEqual(regions, [(250, 500, 500, 1000), (0, 0, 500, 500), (500, 0, 500, 500), (750, 500, 250, 833), (750, 1333, 250, 167), (0, 1500, 1000, 500), (0, 500, 250, 834), (0, 1334, 250, 166)])
 
 if __name__ == '__main__':
     import sys
