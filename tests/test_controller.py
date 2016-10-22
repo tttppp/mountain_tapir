@@ -66,6 +66,31 @@ class TestController(unittest.TestCase):
             + 'should not have been called, because regionToImageFile should have been cleared.'
         self.assertEquals(mockModel.regionToImageFile, {})
 
+    @mock.patch('mountain_tapir.controller.Controller.putImageInPreviewRegion')
+    @mock.patch('mountain_tapir.controller.sample')
+    def testShuffle(self, mockSample, mockPutImageInPreviewRegion):
+        mockModel = mock.Mock(name = 'Model')
+        mockModel.width = 1000
+        mockModel.height = 2000
+        mockModel.regions = [(0,0,10,10), (10,0,10,10), (20,0,10,10), (30,0,10,10)]
+        # Fix the order of the returned image files.
+        mockModel.regionToImageFile.values.side_effect = [['imageFile2','imageFile0','imageFile1','imageFile3']]
+        mockModel.regionToCanvas = {(0,0,10,10): 'canvas0', (10,0,10,10): 'canvas1', (20,0,10,10): 'canvas2', (30,0,10,10): 'canvas3'}
+        mockUIVars = mock.Mock(name = 'UIVars')
+        c = controller.Controller(mockModel, mockUIVars)
+        # Ensure the sample function returns the regions in a known order.
+        mockSample.side_effect = [[(0,0,10,10)], [(10,0,10,10)], [(20,0,10,10)], [(30,0,10,10)]]
+
+        # Call the method under test.
+        c.shuffle()
+
+        mockModel.regionToImageFile.clear.assert_any_call()
+        # Ensure the images have been 'shuffled correctly'.
+        mockPutImageInPreviewRegion.assert_any_call('imageFile2', 'canvas0', (0,0,10,10))
+        mockPutImageInPreviewRegion.assert_any_call('imageFile0', 'canvas1', (10,0,10,10))
+        mockPutImageInPreviewRegion.assert_any_call('imageFile1', 'canvas2', (20,0,10,10))
+        mockPutImageInPreviewRegion.assert_any_call('imageFile3', 'canvas3', (30,0,10,10))
+
 if __name__ == '__main__':
     import sys
     sys.exit(unittest.main())
