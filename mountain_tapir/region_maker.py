@@ -18,6 +18,7 @@
 
 from math import sqrt
 from random import randrange
+from itertools import product
 
 from algorithm import Algorithm
 
@@ -45,26 +46,21 @@ class RegionMaker:
         
         The worst region is defined to be the region furthest from the TARGET_RATIO.
         """
-        def ratioDiff(width, height):
-            if width == 0 or height == 0:
-                return 0
-            return min(abs((width*1.0/height) - TARGET_RATIO), abs((height*1.0/width) - TARGET_RATIO))
         def randNearMid(maximum):
             return (randrange(maximum) + randrange(maximum)) // 2
         regions = [(0, 0, model.width, model.height)]
         while len(regions) < model.regionCount:
-            worstRegion = None
-            worstRegionDiff = -1
+            worstRegion, worstRegionDiff = RegionMaker.findWorstRegion(regions)
             for region in regions:
-                regionDiff = ratioDiff(region[2], region[3])
+                regionDiff = RegionMaker.ratioDiff(region[2], region[3])
                 if regionDiff > worstRegionDiff:
                     worstRegion = region
                     worstRegionDiff = regionDiff
             relativeSplitPoint = (randNearMid(worstRegion[2]), randNearMid(worstRegion[3]))
-            worstHorizontalSplitDiff = max(ratioDiff(relativeSplitPoint[0], worstRegion[3]),
-                                           ratioDiff(worstRegion[2]-relativeSplitPoint[0], worstRegion[3]))
-            worstVerticalSplitDiff = max(ratioDiff(worstRegion[2], relativeSplitPoint[1]),
-                                         ratioDiff(worstRegion[2], worstRegion[3]-relativeSplitPoint[1]))
+            worstHorizontalSplitDiff = max(RegionMaker.ratioDiff(relativeSplitPoint[0], worstRegion[3]),
+                                           RegionMaker.ratioDiff(worstRegion[2]-relativeSplitPoint[0], worstRegion[3]))
+            worstVerticalSplitDiff = max(RegionMaker.ratioDiff(worstRegion[2], relativeSplitPoint[1]),
+                                         RegionMaker.ratioDiff(worstRegion[2], worstRegion[3]-relativeSplitPoint[1]))
             regions.remove(worstRegion)
             if worstHorizontalSplitDiff < worstVerticalSplitDiff:
                 # Split vertically
@@ -98,4 +94,50 @@ class RegionMaker:
                 for x in range(columns) for y in range(rows)]
     @staticmethod
     def makeFrameRegions(model):
-        return []
+        if model.regionCount < 5:
+            return RegionMaker.makeGridRegions(model)
+        width, height = model.width, model.height
+        halfWidth, halfHeight = model.width // 2, model.height // 2
+        quarterWidth, quarterHeight = model.width // 4, model.height // 4
+        centerRegion = (quarterWidth, quarterHeight, halfWidth, halfHeight)
+        # Decide where to draw lines near each corner
+        bestWorstScore = 999999
+        bestRegions = None
+        for joinCornerHorizontal in product((True, False), repeat = 4):
+            top = (0 if joinCornerHorizontal[0] else quarterWidth,
+                   0,
+                   halfWidth + (quarterWidth if joinCornerHorizontal[0] else 0) + ((width - halfWidth - quarterWidth) if joinCornerHorizontal[1] else 0),
+                   quarterHeight)
+            left = (0,
+                    quarterHeight if joinCornerHorizontal[0] else 0,
+                    quarterWidth,
+                    halfHeight + (0 if joinCornerHorizontal[0] else quarterHeight) + (0 if joinCornerHorizontal[2] else (height - halfHeight - quarterHeight)))
+            right = (halfWidth + quarterWidth,
+                     quarterHeight if joinCornerHorizontal[1] else 0,
+                     quarterWidth,
+                     halfHeight + (0 if joinCornerHorizontal[1] else quarterHeight) + (0 if joinCornerHorizontal[3] else (height - halfHeight - quarterHeight)))
+            bottom = (0 if joinCornerHorizontal[2] else quarterWidth,
+                      halfHeight + quarterHeight,
+                      halfWidth + (quarterWidth if joinCornerHorizontal[2] else 0) + ((width - halfWidth - quarterWidth) if joinCornerHorizontal[3] else 0),
+                      quarterHeight)
+            regions = [centerRegion, top, left, right, bottom]
+            worstRegion, worstRegionDiff = RegionMaker.findWorstRegion(regions)
+            if worstRegionDiff < bestWorstScore:
+                bestRegions = regions
+                bestWorstScore = worstRegionDiff
+        return bestRegions
+    @staticmethod
+    def findWorstRegion(regions):
+        worstRegion = None
+        worstRegionDiff = -1
+        for region in regions:
+            regionDiff = RegionMaker.ratioDiff(region[2], region[3])
+            if regionDiff > worstRegionDiff:
+                worstRegion = region
+                worstRegionDiff = regionDiff
+        return worstRegion, worstRegionDiff
+    @staticmethod
+    def ratioDiff(width, height):
+        if width == 0 or height == 0:
+            return 0
+        return min(abs((width*1.0/height) - TARGET_RATIO), abs((height*1.0/width) - TARGET_RATIO))
