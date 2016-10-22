@@ -48,7 +48,7 @@ class TestRegionMaker(unittest.TestCase):
         # Call the method under test.
         regions = region_maker.RegionMaker.makeRegions(mockModel)
         
-        self.assertEqual(regions, [(375, 0, 625, 2000), (149, 0, 226, 2000), (0, 0, 56, 2000), (56, 0, 93, 2000)])
+        self.assertEqual(regions, [(0, 0, 1000, 750), (0, 1222, 1000, 778), (0, 750, 375, 472), (375, 750, 625, 472)])
 
     def testMakeRegions_grid(self):
         """Test generating some regions using the grid algorithm."""

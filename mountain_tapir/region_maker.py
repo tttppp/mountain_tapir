@@ -66,7 +66,7 @@ class RegionMaker:
             worstVerticalSplitDiff = max(ratioDiff(worstRegion[2], relativeSplitPoint[1]),
                                          ratioDiff(worstRegion[2], worstRegion[3]-relativeSplitPoint[1]))
             regions.remove(worstRegion)
-            if worstHorizontalSplitDiff > worstVerticalSplitDiff:
+            if worstHorizontalSplitDiff < worstVerticalSplitDiff:
                 # Split vertically
                 regions.append((worstRegion[0], worstRegion[1], relativeSplitPoint[0], worstRegion[3]))
                 regions.append((worstRegion[0]+relativeSplitPoint[0], worstRegion[1], worstRegion[2]-relativeSplitPoint[0], worstRegion[3]))
