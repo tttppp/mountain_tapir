@@ -121,6 +121,38 @@ class RegionMaker:
                       halfWidth + (quarterWidth if joinCornerHorizontal[2] else 0) + ((width - halfWidth - quarterWidth) if joinCornerHorizontal[3] else 0),
                       quarterHeight)
             regions = [centerRegion, top, left, right, bottom]
+            perimeter = (top[2]//2, right[3], bottom[2], left[3], top[2]-top[2]//2)
+            splits = {'top': [0, top[2]], 'right': [0, right[3]], 'bottom': [0, bottom[2]], 'left': [0, left[3]]}
+            for i in range(model.regionCount - 5):
+                # Find the distance around the perimeter to split a frame
+                perimeterDistance = (sum(perimeter) * (i)) // (model.regionCount - 5)
+                if perimeterDistance < perimeter[0]:
+                    splits['top'].append(perimeterDistance + top[2]//2)
+                elif perimeterDistance < sum(perimeter[:2]):
+                    perimeterDistance -= perimeter[0]
+                    splits['right'].append(perimeterDistance)
+                elif perimeterDistance < sum(perimeter[:3]):
+                    perimeterDistance -= sum(perimeter[:2])
+                    splits['bottom'].append(bottom[2] - perimeterDistance)
+                elif perimeterDistance < sum(perimeter[:4]):
+                    perimeterDistance -= sum(perimeter[:3])
+                    splits['left'].append(left[3] - perimeterDistance)
+                else:
+                    perimeterDistance -= sum(perimeter[:4])
+                    splits['top'].append(perimeterDistance)
+            topRegions = []
+            for x1, x2 in zip(sorted(splits['top'])[:-1], sorted(splits['top'])[1:]):
+                topRegions.append((x1 + top[0], top[1], x2 - x1, top[3]))
+            rightRegions = []
+            for y1, y2 in zip(sorted(splits['right'])[:-1], sorted(splits['right'])[1:]):
+                rightRegions.append((right[0], y1 + right[1], right[2], y2 - y1))
+            bottomRegions = []
+            for x1, x2 in zip(sorted(splits['bottom'])[:-1], sorted(splits['bottom'])[1:]):
+                bottomRegions.append((x1 + bottom[0], bottom[1], x2 - x1, bottom[3]))
+            leftRegions = []
+            for y1, y2 in zip(sorted(splits['left'])[:-1], sorted(splits['left'])[1:]):
+                leftRegions.append((left[0], y1 + left[1], left[2], y2 - y1))
+            regions = [centerRegion] + topRegions + rightRegions + bottomRegions + leftRegions
             worstRegion, worstRegionDiff = RegionMaker.findWorstRegion(regions)
             if worstRegionDiff < bestWorstScore:
                 bestRegions = regions
