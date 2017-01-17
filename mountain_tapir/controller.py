@@ -75,6 +75,8 @@ class Controller:
         print('Save selected')
         fileName = asksaveasfile()
         if fileName != None:
+            if '.' not in fileName:
+                fileName += '.jpg'
             outputImage = Image.new('RGB', (self.model.width, self.model.height))
             for region in self.model.regions:
                 imageFile = self.model.regionToImageFile[region]
