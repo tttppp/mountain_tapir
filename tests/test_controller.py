@@ -116,6 +116,7 @@ class TestController(unittest.TestCase):
         # Call the method under test.
         c.save()
         
+        mockAsksaveasfile.assert_any_call(defaultextension = '.jpg')
         mockImage.new.assert_any_call('RGB', (1000, 2000))
         # Check the images were pasted in the right places.
         mockOutputImage.paste.assert_any_call(mockImages[0].getImageObject(), (0, 0))
@@ -124,41 +125,6 @@ class TestController(unittest.TestCase):
         mockOutputImage.paste.assert_any_call(mockImages[3].getImageObject(), (30, 0))
         # Check the output image was saved correctly.
         mockOutputImage.save.assert_any_call('outputFile.png')
-
-    @mock.patch('mountain_tapir.controller.asksaveasfile')
-    @mock.patch('mountain_tapir.controller.Image')
-    @mock.patch('mountain_tapir.controller.TK')
-    def testSaveDefaultFileExtension(self, mockTK, mockImage, mockAsksaveasfile):
-        """Test saving a collage without giving a file extension."""
-        mockOutputImage = mock.Mock(name = 'mockOutputImage')
-        mockImage.new.side_effect = [mockOutputImage]
-        # Don't supply a file extension and check it defaults to "*.jpg"
-        mockAsksaveasfile.side_effect = ['outputFile']
-        mockModel = mock.Mock(name = 'Model')        
-        mockModel.width = 1000
-        mockModel.height = 2000
-        mockModel.regions = [(0,0,10,10), (10,0,10,10), (20,0,10,10), (30,0,10,10)]
-        # Fix the order of the returned image files.
-        mockImages = [mock.Mock(name = 'ImageFile0'), mock.Mock(name = 'ImageFile1'),
-                      mock.Mock(name = 'ImageFile2'), mock.Mock(name = 'ImageFile3')]
-        mockModel.regionToImageFile = {(0,0,10,10):mockImages[0],
-                                       (10,0,10,10):mockImages[1],
-                                       (20,0,10,10):mockImages[2],
-                                       (30,0,10,10):mockImages[3]}
-        mockUIVars = mock.Mock(name = 'UIVars')
-        c = controller.Controller(mockModel, mockUIVars)
-        
-        # Call the method under test.
-        c.save()
-        
-        mockImage.new.assert_any_call('RGB', (1000, 2000))
-        # Check the images were pasted in the right places.
-        mockOutputImage.paste.assert_any_call(mockImages[0].getImageObject(), (0, 0))
-        mockOutputImage.paste.assert_any_call(mockImages[1].getImageObject(), (10, 0))
-        mockOutputImage.paste.assert_any_call(mockImages[2].getImageObject(), (20, 0))
-        mockOutputImage.paste.assert_any_call(mockImages[3].getImageObject(), (30, 0))
-        # Check the output image was saved correctly.
-        mockOutputImage.save.assert_any_call('outputFile.jpg')
 
 if __name__ == '__main__':
     import sys

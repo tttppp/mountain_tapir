@@ -73,10 +73,8 @@ class Controller:
             usedRegions.add(region)
     def save(self):
         print('Save selected')
-        fileName = asksaveasfile()
-        if fileName != None:
-            if '.' not in fileName:
-                fileName += '.jpg'
+        outputFile = asksaveasfile(defaultextension = '.jpg')
+        if outputFile != None:
             outputImage = Image.new('RGB', (self.model.width, self.model.height))
             for region in self.model.regions:
                 imageFile = self.model.regionToImageFile[region]
@@ -85,7 +83,7 @@ class Controller:
                     continue
                 image = imageFile.getImageObject((region[2], region[3]), 'export')
                 outputImage.paste(image, (region[0], region[1]))
-            outputImage.save(fileName)
+            outputImage.save(outputFile)
     def addRegions(self, delta):
         print('Change if not going below one')
         if self.model.regionCount + delta > 0:
