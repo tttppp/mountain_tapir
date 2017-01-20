@@ -32,5 +32,7 @@ class Model:
         self.regions = None
         self.imageFiles = []
         self.regionToImageFile = defaultdict(lambda : None)
+        # A value between 0 and 3 representing the rotation of the image in 90 degree increments.
+        self.regionToRotation = defaultdict(int)
         self.regionToCanvas = defaultdict(lambda : None)
         self.currentDirectory = config.get('FILE', 'initialdirectory', '/')

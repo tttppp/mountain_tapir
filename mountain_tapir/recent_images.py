@@ -50,6 +50,6 @@ class RecentImages:
         imageCell = TK.Frame(self.scrollFrame, width=THUMBNAIL_WIDTH, height=THUMBNAIL_HEIGHT)
         imageCellCanvas = TK.Canvas(imageCell, width=THUMBNAIL_WIDTH, height=THUMBNAIL_HEIGHT)
         imageCellCanvas.pack()
-        imageFile.makeImage('thumbnail', (THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT), imageCellCanvas)
+        imageFile.makeImage('thumbnail', (THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT), 0, imageCellCanvas)
         imageCellCanvas.bind('<Button-1>',lambda e, c=imageCellCanvas, r=imageFile: selectPlaceToolFunction(imageFile))
         imageCell.pack(side=TK.LEFT)

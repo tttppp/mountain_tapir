@@ -40,6 +40,9 @@ class Menu:
         self.emptyToolButton = TK.Button(self.menuFrame, text='Empty', command=lambda : controller.selectTool(Tool.EMPTY))
         self.emptyToolButton.pack(side=TK.LEFT)
         
+        self.rotateToolButton = TK.Button(self.menuFrame, text='Rotate', command=lambda : controller.selectTool(Tool.ROTATE))
+        self.rotateToolButton.pack(side=TK.LEFT)
+        
         self.shuffleButton = TK.Button(self.menuFrame, text='Shuffle', command=controller.shuffle)
         self.shuffleButton.pack(side=TK.LEFT)
         
