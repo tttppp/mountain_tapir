@@ -81,7 +81,7 @@ class Controller:
                 if imageFile == None:
                     print('Warning: Region without image {0}'.format(region))
                     continue
-                image = imageFile.getImageObject((region[2], region[3]), 'export', self.model.regionToRotation[region])
+                image = imageFile.getImageObject((region[2], region[3]), 'export')
                 outputImage.paste(image, (region[0], region[1]))
             outputImage.save(outputFile)
     def addRegions(self, delta):
@@ -115,8 +115,7 @@ class Controller:
     def putImageInPreviewRegion(self, imageFile, canvas, region):
         """Put an image in a preview region (or remove the existing image if None is supplied)"""
         if imageFile != None:
-            imageFile.makeImage('preview', (region[2], region[3]),
-                                self.model.regionToRotation[region], canvas)
+            imageFile.makeImage('preview', (region[2], region[3]), canvas)
         else:
             # 'all' is the special reference to everything on the canvas.
             canvas.delete('all')
@@ -155,7 +154,7 @@ class Controller:
         elif self.model.selectedTool == Tool.EMPTY:
             self.putImageInPreviewRegion(None, canvas, region)
         elif self.model.selectedTool == Tool.ROTATE:
-            self.model.regionToRotation[region] = (self.model.regionToRotation[region] + 1) % 4
+            self.model.regionToImageFile[region].rotate()
             self.putImageInPreviewRegion(self.model.regionToImageFile[region], canvas, region)
         else:
             print('Currently selected tool is not supported yet: {0}'.format(self.model.selectedTool))
