@@ -64,7 +64,7 @@ class Controller:
         regions = set(self.model.regions)
         for region in regions:
             canvas = self.model.regionToCanvas[region]
-            self.putImageInPreviewRegion(None, self.model.regionToCanvas[region], region)
+            self.putImageInPreviewRegion(None, canvas, region)
         usedRegions = set()
         for imageFile in images:
             region = sample(regions.difference(usedRegions), 1)[0]
@@ -154,8 +154,11 @@ class Controller:
         elif self.model.selectedTool == Tool.EMPTY:
             self.putImageInPreviewRegion(None, canvas, region)
         elif self.model.selectedTool == Tool.ROTATE:
-            self.model.regionToImageFile[region].rotate()
-            self.putImageInPreviewRegion(self.model.regionToImageFile[region], canvas, region)
+            imageFile = self.model.regionToImageFile[region]
+            if imageFile != None:
+                imageFile.rotate()
+                self.putImageInPreviewRegion(imageFile, canvas, region)
+                self.recentImages.updateImage(imageFile)
         else:
             print('Currently selected tool is not supported yet: {0}'.format(self.model.selectedTool))
     def updateWidth(self, event):

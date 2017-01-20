@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from collections import defaultdict
+
 try:
     import tkinter as TK
 except ImportError:
@@ -27,6 +29,7 @@ THUMBNAIL_HEIGHT = 60
 class RecentImages:
     def __init__(self, parent, controller):
         self.myParent = parent
+        self.imageFileToCanvas = defaultdict(lambda : None)
 
         self.recentImagesFrame = TK.Frame(self.myParent)
         self.recentImagesFrame.pack(side=TK.TOP)
@@ -40,6 +43,7 @@ class RecentImages:
         for child in self.scrollFrame.winfo_children():
             child.destroy()
         self.createScrollFrame()
+        self.imageFileToCanvas = defaultdict(lambda : None)
         
     def createScrollFrame(self):
         # THUMBNAIL_HEIGHT+2 allows for a border around the thumbnail.
@@ -53,3 +57,9 @@ class RecentImages:
         imageFile.makeImage('thumbnail', (THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT), imageCellCanvas)
         imageCellCanvas.bind('<Button-1>',lambda e, c=imageCellCanvas, r=imageFile: selectPlaceToolFunction(imageFile))
         imageCell.pack(side=TK.LEFT)
+        self.imageFileToCanvas[imageFile] = imageCellCanvas
+    
+    def updateImage(self, imageFile):
+        imageCellCanvas = self.imageFileToCanvas[imageFile]
+        if imageCellCanvas != None:
+            imageFile.makeImage('thumbnail', (THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT), imageCellCanvas)
