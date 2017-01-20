@@ -109,6 +109,21 @@ class TestImageFile(unittest.TestCase):
         
         assert image == None
 
+    @mock.patch('mountain_tapir.image_file.Image')
+    def testRotate(self, mockImage):
+        """Test rotating an image and getting the resulting image object."""
+        imageFile = image_file.ImageFile('file/path')
+        mockImg = mock.Mock(name = 'Img')
+        
+        # Call the rotate method once
+        imageFile.rotate()
+        # Generate the rotated image.
+        result = imageFile._ImageFile__generateRotatedImage(mockImg)
+        
+        # Check that the image was rotated before being returned.
+        mockImg.transpose.assert_called_with(mockImage.ROTATE_270)
+        assert result == mockImg.transpose()
+
 if __name__ == '__main__':
     import sys
     sys.exit(unittest.main())

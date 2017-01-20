@@ -62,12 +62,7 @@ class ImageFile:
         except IOError:
             print('Error opening image for {0}'.format(purpose))
             return None
-        if self.rotation == 1:
-            image = image.transpose(Image.ROTATE_90)
-        elif self.rotation == 2:
-            image = image.transpose(Image.ROTATE_180)
-        elif self.rotation == 3:
-            image = image.transpose(Image.ROTATE_270)
+        image = self.__generateRotatedImage(image)
         originalDimensions = image.size
         if originalDimensions[0] * dimensions[1] > originalDimensions[1] * dimensions[0]:
             resizeWidth = int((originalDimensions[0] * dimensions[1]) / originalDimensions[1])
@@ -83,7 +78,20 @@ class ImageFile:
         top = middle[1] - int(dimensions[1] / 2)
         box = (left, top, left + dimensions[0], top + dimensions[1])
         return image.crop(box)
-    
+
+    def __generateRotatedImage(self, image):
+        """Use the current rotation of this `ImageFile` to rotate :class:`PIL.Image`.
+        
+        :param image: The input image.
+        :return image: The output image."""
+        if self.rotation == 1:
+            image = image.transpose(Image.ROTATE_90)
+        elif self.rotation == 2:
+            image = image.transpose(Image.ROTATE_180)
+        elif self.rotation == 3:
+            image = image.transpose(Image.ROTATE_270)
+        return image
+
     def rotate(self):
         """Rotate the image by 90 degrees.
         
