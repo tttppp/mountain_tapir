@@ -64,7 +64,7 @@ class TestController(unittest.TestCase):
         self.assertEqual(mockModel.regionToCanvas, {(10, 30, 100, 20): mockCanvas})
         assert not mockPutImageInPreviewRegion.called, 'The method putImageInPreviewRegion '\
             + 'should not have been called, because regionToImageFile should have been cleared.'
-        self.assertEquals(mockModel.regionToImageFile, {})
+        self.assertEqual(mockModel.regionToImageFile, {})
 
     @mock.patch('mountain_tapir.controller.Controller.putImageInPreviewRegion')
     @mock.patch('mountain_tapir.controller.sample')
@@ -125,6 +125,70 @@ class TestController(unittest.TestCase):
         mockOutputImage.paste.assert_any_call(mockImages[3].getImageObject(), (30, 0))
         # Check the output image was saved correctly.
         mockOutputImage.save.assert_any_call('outputFile.png')
+
+    def testMakePreviewRegion(self):
+        """Test the calculation of a region forming part of the preview."""
+        mockModel = mock.Mock(name = 'mockModel')
+        mockModel.width = 40
+        mockModel.height = 10
+        c = controller.Controller(mockModel, None)
+        mockPreview = mock.Mock(name = 'mockPreview')
+        mockPreview.previewContainer.winfo_width.side_effect = [30]
+        mockPreview.previewContainer.winfo_height.side_effect = [6]
+        c.preview = mockPreview
+        
+        # Call the method under test.
+        previewRegion = c._Controller__makePreviewRegion((2,4,5,5))
+        
+        self.assertEqual(previewRegion, (1,2,3,3))
+
+    def testGetPreviewDimensions_thinCanvas(self):
+        """Check that if the preview canvas is too thin the region is scaled down."""
+        mockModel = mock.Mock(name = 'mockModel')
+        mockModel.width = 100
+        mockModel.height = 100
+        c = controller.Controller(mockModel, None)
+        mockPreview = mock.Mock(name = 'mockPreview')
+        mockPreview.previewContainer.winfo_width.side_effect = [50]
+        mockPreview.previewContainer.winfo_height.side_effect = [100]
+        c.preview = mockPreview
+        
+        # Call the method under test.
+        dimensions = c._Controller__getPreviewDimensions()
+        
+        self.assertEqual(dimensions, (50,50))
+
+    def testGetPreviewDimensions_shortCanvas(self):
+        """Check that if the preview canvas is too short the region is scaled down."""
+        mockModel = mock.Mock(name = 'mockModel')
+        mockModel.width = 100
+        mockModel.height = 100
+        c = controller.Controller(mockModel, None)
+        mockPreview = mock.Mock(name = 'mockPreview')
+        mockPreview.previewContainer.winfo_width.side_effect = [100]
+        mockPreview.previewContainer.winfo_height.side_effect = [50]
+        c.preview = mockPreview
+        
+        # Call the method under test.
+        dimensions = c._Controller__getPreviewDimensions()
+        
+        self.assertEqual(dimensions, (50,50))
+
+    def testGetPreviewDimensions_tooLargeCanvas(self):
+        """Check that if the preview canvas is larger than the output size the region is not scaled."""
+        mockModel = mock.Mock(name = 'mockModel')
+        mockModel.width = 100
+        mockModel.height = 100
+        c = controller.Controller(mockModel, None)
+        mockPreview = mock.Mock(name = 'mockPreview')
+        mockPreview.previewContainer.winfo_width.side_effect = [200]
+        mockPreview.previewContainer.winfo_height.side_effect = [200]
+        c.preview = mockPreview
+        
+        # Call the method under test.
+        dimensions = c._Controller__getPreviewDimensions()
+        
+        self.assertEqual(dimensions, (100,100))
 
 if __name__ == '__main__':
     import sys

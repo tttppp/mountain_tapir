@@ -96,13 +96,10 @@ class Controller:
         self.refresh()
     def refresh(self):
         self.model.regionToCanvas.clear()
-        containerWidth = self.preview.previewContainer.winfo_width()
-        containerHeight = self.preview.previewContainer.winfo_height()
-        width = min(self.model.width, containerWidth, (self.model.width * containerHeight) / self.model.height)
-        height = min(self.model.height, containerHeight, (self.model.height * containerWidth) / self.model.width)
+        width, height = self.__getPreviewDimensions()
         self.preview.clearAndCreateFrame(width, height)
         for region in self.model.regions:
-            previewRegion = (region[0]*width/self.model.width, region[1]*height/self.model.height, region[2]*width/self.model.width, region[3]*height/self.model.height)
+            previewRegion = self.__makePreviewRegion(region)
             imageCell = TK.Frame(self.preview.previewFrame, width=previewRegion[2], height=previewRegion[3])
             canvas = TK.Canvas(imageCell, width=previewRegion[2], height=previewRegion[3], background=randColor())
             canvas.pack()
@@ -111,15 +108,28 @@ class Controller:
             self.model.regionToCanvas[previewRegion] = canvas
             if region in self.model.regionToImageFile.keys():
                 imageFile = self.model.regionToImageFile[region]
-                self.putImageInPreviewRegion(imageFile, canvas, previewRegion)
+                self.putImageInPreviewRegion(imageFile, canvas, region)
     def putImageInPreviewRegion(self, imageFile, canvas, region):
         """Put an image in a preview region (or remove the existing image if None is supplied)"""
         if imageFile != None:
-            imageFile.makeImage('preview', (region[2], region[3]), canvas)
+            previewRegion = self.__makePreviewRegion(region)
+            imageFile.makeImage('preview', (previewRegion[2], previewRegion[3]), canvas)
         else:
             # 'all' is the special reference to everything on the canvas.
             canvas.delete('all')
         self.model.regionToImageFile[region] = imageFile
+    def __makePreviewRegion(self, region):
+        """Create a region based on the model region and the current size of the preview pane."""
+        width, height = self.__getPreviewDimensions()
+        return (region[0]*width//self.model.width, region[1]*height//self.model.height,
+                region[2]*width//self.model.width, region[3]*height//self.model.height)
+    def __getPreviewDimensions(self):
+        """Get the current dimensions of the preview panel as a tuple."""
+        containerWidth = self.preview.previewContainer.winfo_width()
+        containerHeight = self.preview.previewContainer.winfo_height()
+        width = min(self.model.width, containerWidth, (self.model.width * containerHeight) / self.model.height)
+        height = min(self.model.height, containerHeight, (self.model.height * containerWidth) / self.model.width)
+        return (width, height)
     def clicked(self, canvas, region):
         if self.model.selectedTool == Tool.LOAD:
             fileName = askopenfilename(parent=canvas, initialdir=self.model.currentDirectory, title='Choose an image.')
