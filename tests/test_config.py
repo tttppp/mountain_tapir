@@ -29,18 +29,22 @@ import mock
 from mountain_tapir import config
 
 class TestConfig(unittest.TestCase):
+    @mock.patch('mountain_tapir.config.expanduser')
     @mock.patch('mountain_tapir.config.configparser')
-    def testPropertiesFileLoaded(self, mockConfigparser):
+    def testPropertiesFileLoaded(self, mockConfigparser, mockExpanduser):
         """Test that the properties file is loaded when the Config is initialised."""
         mockRawConfigParser = mock.Mock(name = "RawConfigParser")
         mockConfigparser.RawConfigParser.return_value = mockRawConfigParser
+        mockExpanduser.return_value = 'HOME'
         
         config.Config()
         
-        mockRawConfigParser.read.assert_called_with('mountain_tapir.properties')
+        expectedList = ['mountain_tapir.properties', 'HOME/.mountain_tapir/mountain_tapir.properties']
+        mockRawConfigParser.read.assert_called_with(expectedList)
 
+    @mock.patch('mountain_tapir.config.expanduser')
     @mock.patch('mountain_tapir.config.configparser')
-    def testGetLoadsValue(self, mockConfigparser):
+    def testGetLoadsValue(self, mockConfigparser, mockExpanduser):
         """Test that loading a property returns the value from the config object."""
         mockRawConfigParser = mock.Mock(name = "RawConfigParser")
         mockConfigparser.RawConfigParser.return_value = mockRawConfigParser
@@ -51,8 +55,9 @@ class TestConfig(unittest.TestCase):
         mockRawConfigParser.get.assert_called_with('section', 'key')
         assert value == 'value'
 
+    @mock.patch('mountain_tapir.config.expanduser')
     @mock.patch('mountain_tapir.config.configparser')
-    def testGetCanReturnDefault(self, mockConfigparser):
+    def testGetCanReturnDefault(self, mockConfigparser, mockExpanduser):
         """Test that the default value is returned if the key is not found."""
         mockRawConfigParser = mock.Mock(name = "RawConfigParser")
         mockConfigparser.RawConfigParser.return_value = mockRawConfigParser

@@ -21,10 +21,13 @@ try:
 except ImportError:
     import ConfigParser as configparser
 
+from os.path import expanduser
+
 class Config:
     def __init__(self):
         self.config = configparser.RawConfigParser()
-        self.config.read('mountain_tapir.properties')
+        home = expanduser('~')
+        self.config.read(['mountain_tapir.properties', home + '/.mountain_tapir/mountain_tapir.properties'])
     def get(self, section, key, default = None):
         try:
             value = self.config.get(section, key)
