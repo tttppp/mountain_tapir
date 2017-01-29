@@ -118,6 +118,7 @@ class Controller:
             # 'all' is the special reference to everything on the canvas.
             canvas.delete('all')
         self.model.regionToImageFile[region] = imageFile
+        self.model.regionToCanvas[region] = canvas
     def __makePreviewRegion(self, region):
         """Create a region based on the model region and the current size of the preview pane."""
         width, height = self.__getPreviewDimensions()
@@ -167,7 +168,10 @@ class Controller:
             imageFile = self.model.regionToImageFile[region]
             if imageFile != None:
                 imageFile.rotate()
-                self.putImageInPreviewRegion(imageFile, canvas, region)
+                # Rotate all instances of the image in the collage.
+                for r, i in self.model.regionToImageFile.items():
+                    if i == imageFile:
+                        self.putImageInPreviewRegion(imageFile, self.model.regionToCanvas[r], r)
                 self.recentImages.updateImage(imageFile)
         else:
             print('Currently selected tool is not supported yet: {0}'.format(self.model.selectedTool))

@@ -217,6 +217,91 @@ class TestController(unittest.TestCase):
         mockRecentImages.addImage.assert_any_call('imageFile', mockSelectPlaceTool)
         mockPutImageInPreviewRegion.assert_any_call('imageFile', mockCanvas, region)
 
+    def testSwapFirstClick(self):
+        """Check that clicking a region using the swap tool (when no region is stored) causes it to be stored."""
+        region = (10, 20, 30, 40)
+        mockModel = mock.Mock(name = 'mockModel')
+        mockModel.selectedTool = Tool.SWAP
+        mockModel.regionToImageFile = {region: 'imageFile'}
+        c = controller.Controller(mockModel, None)
+        c.selectedImage = c.selectedCanvas = c.selectedRegion = None
+        
+        # Call the method under test.
+        c.clicked('canvas', region)
+        
+        self.assertEqual(c.selectedImage, 'imageFile')
+        self.assertEqual(c.selectedCanvas, 'canvas')
+        self.assertEqual(c.selectedRegion, region)
+
+    def testSwapSecondClick(self):
+        """Check that clicking a region using the swap tool when another region is stored, causes them to be swapped."""
+        mockModel = mock.Mock(name = 'mockModel')
+        mockModel.selectedTool = Tool.SWAP
+        mockModel.regionToImageFile = {'clickedRegion': 'clickedImage'}
+        c = controller.Controller(mockModel, None)
+        c.selectedImage = 'firstImage'
+        c.selectedCanvas = 'firstCanvas'
+        c.selectedRegion = 'firstRegion'
+        mockPutImageInPreviewRegion = c.putImageInPreviewRegion = mock.Mock('mockPutImageInPreviewRegion')
+        
+        # Call the method under test.
+        c.clicked('clickedCanvas', 'clickedRegion')
+        
+        mockPutImageInPreviewRegion.assert_any_call('clickedImage', 'firstCanvas', 'firstRegion')
+        mockPutImageInPreviewRegion('firstImage', 'clickedCanvas', 'clickedRegion')
+        self.assertEqual(c.selectedImage, None)
+        self.assertEqual(c.selectedCanvas, None)
+        self.assertEqual(c.selectedRegion, None)
+
+    def testPlace(self):
+        """Check that clicking a region using the place tool puts the image in that region."""
+        mockModel = mock.Mock(name = 'mockModel')
+        mockModel.selectedTool = Tool.PLACE
+        c = controller.Controller(mockModel, None)
+        c.selectedImage = 'imageFile'
+        mockPutImageInPreviewRegion = c.putImageInPreviewRegion = mock.Mock('mockPutImageInPreviewRegion')
+        
+        # Call the method under test.
+        c.clicked('clickedCanvas', 'clickedRegion')
+        
+        mockPutImageInPreviewRegion.assert_any_call('imageFile', 'clickedCanvas', 'clickedRegion')
+
+    def testEmpty(self):
+        """Check that clicking a region using the empty tool removes any image in that region."""
+        mockModel = mock.Mock(name = 'mockModel')
+        mockModel.selectedTool = Tool.EMPTY
+        c = controller.Controller(mockModel, None)
+        mockPutImageInPreviewRegion = c.putImageInPreviewRegion = mock.Mock('mockPutImageInPreviewRegion')
+        
+        # Call the method under test.
+        c.clicked('clickedCanvas', 'clickedRegion')
+        
+        mockPutImageInPreviewRegion.assert_any_call(None, 'clickedCanvas', 'clickedRegion')
+
+
+    def testRotate(self):
+        """Check that clicking a region using the rotate tool rotates all instances of that image.
+        
+        Simulate three regions, two of which contain the clicked image."""
+        mockModel = mock.Mock(name = 'mockModel')
+        mockModel.selectedTool = Tool.ROTATE
+        mockImageFile = mock.Mock(name = 'mockImageFile')
+        mockModel.regionToImageFile = {'clickedRegion': mockImageFile, 'region2': mockImageFile, 'region3': 'decoyImg'}
+        mockModel.regionToCanvas = {'clickedRegion': 'clickedCanvas', 'region2': 'canvas2', 'region3': 'canvas3'}
+        c = controller.Controller(mockModel, None)
+        mockPutImageInPreviewRegion = c.putImageInPreviewRegion = mock.Mock(name = 'mockPutImageInPreviewRegion')
+        mockRecentImages = c.recentImages = mock.Mock(name = 'mockRecentImages')
+        
+        # Call the method under test.
+        c.clicked('clickedCanvas', 'clickedRegion')
+        
+        mockImageFile.rotate.assert_any_call()
+        mockPutImageInPreviewRegion.assert_any_call(mockImageFile, 'clickedCanvas', 'clickedRegion')
+        mockPutImageInPreviewRegion.assert_any_call(mockImageFile, 'canvas2', 'region2')
+        self.assertEqual(len(mockPutImageInPreviewRegion.mock_calls), 2, 'Extra call to mockPutImageInPreviewRegion.')
+        # Also check that the recent images thumbnail is rotated.
+        mockRecentImages.updateImage.assert_any_call(mockImageFile)
+
 if __name__ == '__main__':
     import sys
     sys.exit(unittest.main())
