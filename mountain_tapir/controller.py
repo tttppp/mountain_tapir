@@ -174,16 +174,16 @@ class Controller:
     def updateWidth(self, event):
         newWidth = int(self.uiVars.widthVar.get())
         if newWidth != self.model.width:
-            self.scaleRegions((self.model.width, self.model.height), (newWidth, self.model.height))
+            self.__scaleRegions((self.model.width, self.model.height), (newWidth, self.model.height))
             self.model.width = newWidth
             self.refresh()
     def updateHeight(self, event):
         newHeight = int(self.uiVars.heightVar.get())
         if newHeight != self.model.height:
-            self.scaleRegions((self.model.width, self.model.height), (self.model.width, newHeight))
+            self.__scaleRegions((self.model.width, self.model.height), (self.model.width, newHeight))
             self.model.height = newHeight
             self.refresh()
-    def scaleRegions(self, oldDimensions, newDimensions):
+    def __scaleRegions(self, oldDimensions, newDimensions):
         oldRegions, self.model.regions = self.model.regions, []
         oldRegionToImageFile, self.model.regionToImageFile = self.model.regionToImageFile, defaultdict(lambda : None)
         oldRegionToCanvas, self.model.regionToCanvas = self.model.regionToCanvas, defaultdict(lambda : None)

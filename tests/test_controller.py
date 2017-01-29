@@ -27,6 +27,7 @@ import unittest
 import mock
 
 from mountain_tapir import controller
+from mountain_tapir.tool import Tool
 
 class TestController(unittest.TestCase):
     @mock.patch('mountain_tapir.controller.Controller.putImageInPreviewRegion')
@@ -189,6 +190,32 @@ class TestController(unittest.TestCase):
         dimensions = c._Controller__getPreviewDimensions()
         
         self.assertEqual(dimensions, (100,100))
+
+    @mock.patch('mountain_tapir.controller.path')
+    @mock.patch('mountain_tapir.controller.askopenfilename')
+    @mock.patch('mountain_tapir.controller.ImageFile')
+    def testLoad(self, mockImageFile, mockAskopenfilename, mockPath):
+        """Check that clicking a region using the load tool causes file dialog to be launched."""
+        mockModel = mock.Mock(name = 'mockModel')
+        mockModel.selectedTool = Tool.LOAD
+        mockModel.currentDirectory = 'oldDir'
+        mockCanvas = mock.Mock(name = 'mockCanvas')
+        region = (10, 20, 30, 40)
+        c = controller.Controller(mockModel, None)
+        mockRecentImages = c.recentImages = mock.Mock(name = 'mockRecentImages')
+        mockAskopenfilename.return_value = 'newDir/Picture1.jpg'
+        mockPath.dirname.return_value = 'newDir'
+        mockImageFile.return_value = 'imageFile'
+        mockSelectPlaceTool = c.selectPlaceTool = mock.Mock(name = 'mockSelectPlaceTool')
+        mockPutImageInPreviewRegion = c.putImageInPreviewRegion = mock.Mock(name = 'mockPutImageInPreviewRegion')
+        
+        # Call the method under test.
+        c.clicked(mockCanvas, region)
+        
+        mockAskopenfilename.assert_any_call(parent=mockCanvas, initialdir='oldDir', title='Choose an image.')
+        self.assertEqual(mockModel.currentDirectory, 'newDir')
+        mockRecentImages.addImage.assert_any_call('imageFile', mockSelectPlaceTool)
+        mockPutImageInPreviewRegion.assert_any_call('imageFile', mockCanvas, region)
 
 if __name__ == '__main__':
     import sys
