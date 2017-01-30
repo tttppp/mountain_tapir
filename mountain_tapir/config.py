@@ -39,7 +39,7 @@ class Config:
                 self.persistFile = homeConfigFile
             except:
                 # If we can't manage to create one then just run without persisting config.
-                pass
+                self.persistFile = None
         else:
             self.persistFile = readFiles[0]
     def get(self, section, key, default = None):

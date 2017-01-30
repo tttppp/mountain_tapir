@@ -62,6 +62,24 @@ class TestConfig(unittest.TestCase):
         mockOpen.assert_called_with('HOME/.mountain_tapir/mountain_tapir.properties', 'a')
         mockFile.close.assert_called_with()
 
+    @mock.patch('mountain_tapir.config.open')
+    @mock.patch('mountain_tapir.config.os')
+    @mock.patch('mountain_tapir.config.configparser')
+    def testFileCreationErrorSwallowed(self, mockConfigparser, mockOs, mockOpen):
+        """Test that if a properties file can't be created the method doesn't throw an exception."""
+        mockRawConfigParser = mock.Mock(name = "RawConfigParser")
+        mockConfigparser.RawConfigParser.return_value = mockRawConfigParser
+        mockOs.path.expanduser.return_value = 'HOME'
+        mockOs.path.join.side_effect = ['HOME/.mountain_tapir', 'HOME/.mountain_tapir/mountain_tapir.properties']
+        mockRawConfigParser.read.return_value = []
+        mockOpen.side_effect = OSError()
+        
+        c = config.Config()
+        
+        mockOpen.assert_called_with('HOME/.mountain_tapir/mountain_tapir.properties', 'a')
+        # ...and no exception is seen
+        self.assertEqual(None, c.persistFile, msg = 'Expected the persist file to be set to None.')
+
     @mock.patch('mountain_tapir.config.os')
     @mock.patch('mountain_tapir.config.configparser')
     def testGetLoadsValue(self, mockConfigparser, mockOs):
