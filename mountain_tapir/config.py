@@ -32,14 +32,14 @@ class Config:
         readFiles = self.config.read(['mountain_tapir.properties', homeConfigFile])
         # Try to create a properties file if one doesn't already exist.
         if len(readFiles) == 0:
-            #try:
+            try:
                 if not os.path.exists(dotDir):
                     os.mkdir(dotDir)
                 open(homeConfigFile, 'a').close()
                 self.persistFile = homeConfigFile
-            #except:
-            #    # If we can't manage to create one then just run without persisting config.
-            #    pass
+            except:
+                # If we can't manage to create one then just run without persisting config.
+                pass
         else:
             self.persistFile = readFiles[0]
     def get(self, section, key, default = None):
