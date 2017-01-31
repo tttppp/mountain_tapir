@@ -65,8 +65,11 @@ class Config:
             self.config.add_section(section)
         self.config.set(section, key, value)
         if self.persistFile != None:
+            print('Opening: {0}'.format(self.persistFile))
             try:
                 with open(self.persistFile, 'w') as outFile:
                     self.config.write(outFile)
             except:
                 print('Failed to write to config file: {0}'.format(self.persistFile))
+        else:
+            print('Not opening: {0}'.format(self.persistFile))
