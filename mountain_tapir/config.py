@@ -43,6 +43,11 @@ class Config:
         else:
             self.persistFile = readFiles[0]
     def get(self, section, key, default = None):
+        """Get a value from the configuration.
+        
+        :param section: The name of the config section.
+        :param key: The name of the option within the section.
+        :param default: Optional parameter specifying the default value."""
         try:
             value = self.config.get(section, key)
         except configparser.NoSectionError:
@@ -50,3 +55,18 @@ class Config:
         if value == None:
             value = default
         return value
+    def update(self, section, key, value):
+        """Update a config entry and save the resulting options.
+        
+        :param section: The name of the config section.
+        :param key: The name of the option within the section.
+        :param value: The value to set."""
+        if not self.config.has_section(section):
+            self.config.add_section(section)
+        self.config.set(section, key, value)
+        if self.persistFile != None:
+            try:
+                with open(self.persistFile, 'w') as outFile:
+                    self.config.write(outFile)
+            except:
+                print('Failed to write to config file: {0}'.format(self.persistFile))

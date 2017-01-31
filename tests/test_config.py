@@ -111,6 +111,52 @@ class TestConfig(unittest.TestCase):
         mockRawConfigParser.get.assert_called_with('section', 'key')
         assert value == 'default'
 
+    @mock.patch('mountain_tapir.config.open')
+    def testUpdateConfig(self, mockOpen):
+        """Test updating a config value."""
+        c = config.Config()
+        c.persistFile = 'path/to/file'
+        mockRawConfigParser = mock.Mock(name = "RawConfigParser")
+        mockRawConfigParser.has_section.return_value = False
+        c.config = mockRawConfigParser
+        mockOutFile = mockOpen.return_value = mock.MagicMock(name = 'outFile')
+        
+        c.update('section', 'key', 'newValue')
+        
+        mockRawConfigParser.add_section.assert_called_with('section')
+        mockRawConfigParser.set.assert_called_with('section', 'key', 'newValue')
+        # Check the config is written to the file.
+        mockRawConfigParser.write.assert_called_with(mockOutFile.__enter__())
+
+    @mock.patch('mountain_tapir.config.open')
+    def testUpdateCouldntWriteFile(self, mockOpen):
+        """Test that the application doesn't crash if it can't write to the config file."""
+        c = config.Config()
+        c.persistFile = 'path/to/file'
+        mockRawConfigParser = mock.Mock(name = "RawConfigParser")
+        mockRawConfigParser.has_section.return_value = True
+        c.config = mockRawConfigParser
+        mockRawConfigParser.write.side_effect = OSError()
+        
+        c.update('section', 'key', 'newValue')
+        
+        mockRawConfigParser.set.assert_called_with('section', 'key', 'newValue')
+        # Note that there were no exceptions thrown by the method.
+
+    @mock.patch('mountain_tapir.config.open')
+    def testNoWriteIfNoPersistFile(self, mockOpen):
+        """Test that we don't try to write to a file if persistFile isn't set."""
+        c = config.Config()
+        c.persistFile = None
+        mockRawConfigParser = mock.Mock(name = "RawConfigParser")
+        mockRawConfigParser.has_section.return_value = True
+        c.config = mockRawConfigParser
+        
+        c.update('section', 'key', 'newValue')
+        
+        mockRawConfigParser.set.assert_called_with('section', 'key', 'newValue')
+        self.assertFalse(mockOpen.called, msg = 'Unexpected attempt to write to a file.')
+
 if __name__ == '__main__':
     import sys
     sys.exit(unittest.main())
