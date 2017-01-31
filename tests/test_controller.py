@@ -198,7 +198,7 @@ class TestController(unittest.TestCase):
         """Check that clicking a region using the load tool causes file dialog to be launched."""
         mockModel = mock.Mock(name = 'mockModel')
         mockModel.selectedTool = Tool.LOAD
-        mockModel.currentDirectory = 'oldDir'
+        mockModel.getCurrentDirectory.return_value = 'oldDir'
         mockCanvas = mock.Mock(name = 'mockCanvas')
         region = (10, 20, 30, 40)
         c = controller.Controller(mockModel, None)
@@ -213,7 +213,7 @@ class TestController(unittest.TestCase):
         c.clicked(mockCanvas, region)
         
         mockAskopenfilename.assert_any_call(parent=mockCanvas, initialdir='oldDir', title='Choose an image.')
-        self.assertEqual(mockModel.currentDirectory, 'newDir')
+        mockModel.setCurrentDirectory.assert_called_with('newDir')
         mockRecentImages.addImage.assert_any_call('imageFile', mockSelectPlaceTool)
         mockPutImageInPreviewRegion.assert_any_call('imageFile', mockCanvas, region)
 

@@ -33,12 +33,22 @@ class TestModel(unittest.TestCase):
     def testCurrentDirectorySet(self):
         """Test that the config object is used to set the current directory."""
         mockConfig = Mock(name = "Config")
-        mockConfig.get.return_value='currentDirectory'
+        mockConfig.get.return_value = 'currentDirectory'
         
         m = model.Model(mockConfig)
         
         mockConfig.get.assert_called_with('FILE', 'initialdirectory', '/')
-        assert m.currentDirectory == 'currentDirectory'
+        assert m.getCurrentDirectory() == 'currentDirectory'
+
+    def testSetCurrentDirectory(self):
+        """Test that setting the current directory also updates the config file."""
+        mockConfig = Mock(name = "Config")
+        mockConfig.get.return_value = 'currentDirectory'
+        m = model.Model(mockConfig)
+        
+        m.setCurrentDirectory('newDirectory')
+        
+        mockConfig.update.assert_any_call('FILE', 'initialdirectory', 'newDirectory')
 
 if __name__ == '__main__':
     import sys

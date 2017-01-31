@@ -24,6 +24,7 @@ from tool import Tool
 
 class Model:
     def __init__(self, config):
+        self.config = config
         self.selectedTool = Tool.LOAD
         self.regionCount = Constants.INITIAL_REGIONS
         self.width = Constants.INITIAL_WIDTH
@@ -33,4 +34,9 @@ class Model:
         self.imageFiles = []
         self.regionToImageFile = defaultdict(lambda : None)
         self.regionToCanvas = defaultdict(lambda : None)
-        self.currentDirectory = config.get('FILE', 'initialdirectory', '/')
+        self.__currentDirectory = config.get('FILE', 'initialdirectory', '/')
+    def setCurrentDirectory(self, currentDirectory):
+        self.__currentDirectory = currentDirectory
+        self.config.update('FILE', 'initialdirectory', currentDirectory)
+    def getCurrentDirectory(self):
+        return self.__currentDirectory

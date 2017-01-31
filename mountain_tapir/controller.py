@@ -133,11 +133,12 @@ class Controller:
         return (width, height)
     def clicked(self, canvas, region):
         if self.model.selectedTool == Tool.LOAD:
-            fileName = askopenfilename(parent=canvas, initialdir=self.model.currentDirectory, title='Choose an image.')
+            fileName = askopenfilename(parent=canvas, initialdir=self.model.getCurrentDirectory(),
+                                       title='Choose an image.')
             if fileName == '':
                 print('Cancelled opening image')
                 return
-            self.model.currentDirectory = path.dirname(fileName)
+            self.model.setCurrentDirectory(path.dirname(fileName))
             imageFile = ImageFile(fileName)
             self.model.imageFiles.append(imageFile)
             
