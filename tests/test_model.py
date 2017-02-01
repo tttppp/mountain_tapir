@@ -30,15 +30,22 @@ from mock import Mock
 from mountain_tapir import model
 
 class TestModel(unittest.TestCase):
-    def testCurrentDirectorySet(self):
-        """Test that the config object is used to set the current directory."""
+    def testInitModel(self):
+        """Test that the config object is used to set certain values."""
         mockConfig = Mock(name = "Config")
-        mockConfig.get.return_value = 'currentDirectory'
+        mockConfig.get.side_effect = [8, 100, 200, 'currentDirectory']
         
         m = model.Model(mockConfig)
         
-        mockConfig.get.assert_called_with('FILE', 'initialdirectory', '/')
-        assert m.getCurrentDirectory() == 'currentDirectory'
+        mockConfig.get.assert_any_call('COLLAGE', 'regionCount', 6, 'int')
+        mockConfig.get.assert_any_call('COLLAGE', 'width', 600, 'int')
+        mockConfig.get.assert_any_call('COLLAGE', 'height', 400, 'int')
+        mockConfig.get.assert_any_call('FILE', 'initialdirectory', '/')
+        self.assertEqual(m.getRegionCount(), 8, 'Unexpected region count')
+        self.assertEqual(m.getWidth(), 100, 'Unexpected width')
+        self.assertEqual(m.getHeight(), 200, 'Unexpected height')
+        self.assertEqual(m.getCurrentDirectory(), 'currentDirectory', msg = 'Unexpected current directory')
+        self.assertEqual(m.getRegions(), None, 'Expected region list to be initialise to None')
 
     def testSetCurrentDirectory(self):
         """Test that setting the current directory also updates the config file."""
@@ -49,6 +56,36 @@ class TestModel(unittest.TestCase):
         m.setCurrentDirectory('newDirectory')
         
         mockConfig.update.assert_any_call('FILE', 'initialdirectory', 'newDirectory')
+
+    def testSetRegions(self):
+        """Test that setting the regions also updates the config file with the number of regions."""
+        mockConfig = Mock(name = "Config")
+        mockConfig.get.side_effect = [8, 100, 200, 'currentDirectory']
+        m = model.Model(mockConfig)
+        
+        m.setRegions([(1, 2, 3, 4)])
+        
+        mockConfig.update.assert_any_call('COLLAGE', 'regionCount', 1)
+
+    def testSetWidth(self):
+        """Test that the width is persisted in the config file."""
+        mockConfig = Mock(name = "Config")
+        mockConfig.get.side_effect = [8, 100, 200, 'currentDirectory']
+        m = model.Model(mockConfig)
+        
+        m.setWidth(300)
+        
+        mockConfig.update.assert_any_call('COLLAGE', 'width', 300)
+
+    def testSetHeight(self):
+        """Test that the height is persisted in the config file."""
+        mockConfig = Mock(name = "Config")
+        mockConfig.get.side_effect = [8, 100, 200, 'currentDirectory']
+        m = model.Model(mockConfig)
+        
+        m.setHeight(300)
+        
+        mockConfig.update.assert_any_call('COLLAGE', 'height', 300)
 
 if __name__ == '__main__':
     import sys

@@ -112,6 +112,34 @@ class TestConfig(unittest.TestCase):
         mockRawConfigParser.get.assert_called_with('section', 'key')
         assert value == 'default'
 
+    @mock.patch('mountain_tapir.config.os')
+    @mock.patch('mountain_tapir.config.configparser')
+    def testGetInt(self, mockConfigparser, mockOs):
+        """Test that loading an integer property works."""
+        mockRawConfigParser = mock.Mock(name = "RawConfigParser")
+        mockConfigparser.RawConfigParser.return_value = mockRawConfigParser
+        mockRawConfigParser.getint.return_value = 123
+        mockRawConfigParser.read.return_value = ['HOME/.mountain_tapir/mountain_tapir.properties']
+        
+        value = config.Config().get('section', 'key', 'default', 'int')
+        
+        mockRawConfigParser.getint.assert_called_with('section', 'key')
+        self.assertEqual(value, 123, msg = 'Unexpected value returned from get.')
+
+    @mock.patch('mountain_tapir.config.os')
+    @mock.patch('mountain_tapir.config.configparser')
+    def testGetBoolean(self, mockConfigparser, mockOs):
+        """Test that loading a boolean property works."""
+        mockRawConfigParser = mock.Mock(name = "RawConfigParser")
+        mockConfigparser.RawConfigParser.return_value = mockRawConfigParser
+        mockRawConfigParser.getboolean.return_value = True
+        mockRawConfigParser.read.return_value = ['HOME/.mountain_tapir/mountain_tapir.properties']
+        
+        value = config.Config().get('section', 'key', 'default', 'boolean')
+        
+        mockRawConfigParser.getboolean.assert_called_with('section', 'key')
+        self.assertEqual(value, True, msg = 'Unexpected value returned from get.')
+
     @mock.patch('mountain_tapir.config.open')
     def testUpdateConfig(self, mockOpen):
         """Test updating a config value."""
