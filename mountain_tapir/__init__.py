@@ -18,4 +18,4 @@
 
 __author__ = 'tttppp'
 __email__ = 'tttppp@users.noreply.github.com'
-__version__ = '0.1.2'
+__version__ = '0.2.0'
