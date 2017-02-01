@@ -2,6 +2,14 @@
 History
 =======
 
+0.2.0 (2017-02-01)
+------------------
+
+* Support for rotating images by ninety degrees (also pi by two radians).
+* Persistance of user specified settings in home directory file (e.g. last visited directory, algorithm, etc.).
+* Add a default file extension of jpg.
+* Various bug fixes.
+
 0.1.2 (2016-10-24)
 ------------------
 
