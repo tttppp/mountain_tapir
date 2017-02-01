@@ -42,15 +42,20 @@ class Config:
                 self.persistFile = None
         else:
             self.persistFile = readFiles[0]
-    def get(self, section, key, default = None):
+    def get(self, section, key, default = None, valueType = 'String'):
         """Get a value from the configuration.
         
         :param section: The name of the config section.
         :param key: The name of the option within the section.
         :param default: Optional parameter specifying the default value."""
         try:
-            value = self.config.get(section, key)
-        except configparser.NoSectionError:
+            if valueType == 'int':
+                value = self.config.getint(section, key)
+            elif valueType == 'boolean':
+                value = self.config.getboolean(section, key)
+            else:
+                value = self.config.get(section, key)
+        except (configparser.NoSectionError, configparser.NoOptionError):
             value = default
         if value == None:
             value = default

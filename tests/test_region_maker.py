@@ -36,9 +36,9 @@ class TestRegionMaker(unittest.TestCase):
         """Test generating some regions using the collage algorithm."""
         mockModel = mock.Mock(name = 'Model')
         mockModel.algorithm = algorithm.Algorithm.COLLAGE
-        mockModel.width = 1000
-        mockModel.height = 2000
-        mockModel.regionCount = 4
+        mockModel.getWidth.return_value = 1000
+        mockModel.getHeight.return_value = 2000
+        mockModel.getRegionCount.return_value = 4
         
         # Pick an arbitrary integer sequence to be returned by the randrange
         # method. We ensure that all values are 'near' to half the supplied
@@ -54,9 +54,9 @@ class TestRegionMaker(unittest.TestCase):
         """Test generating some regions using the grid algorithm."""
         mockModel = mock.Mock(name = 'Model')
         mockModel.algorithm = algorithm.Algorithm.GRID
-        mockModel.width = 1000
-        mockModel.height = 2000
-        mockModel.regionCount = 4
+        mockModel.getWidth.return_value = 1000
+        mockModel.getHeight.return_value = 2000
+        mockModel.getRegionCount.return_value = 4
 
         # Call the method under test.
         regions = region_maker.RegionMaker.makeRegions(mockModel)
@@ -67,9 +67,9 @@ class TestRegionMaker(unittest.TestCase):
         """Test generating some regions using the frame algorithm."""
         mockModel = mock.Mock(name = 'Model')
         mockModel.algorithm = algorithm.Algorithm.FRAME
-        mockModel.width = 1000
-        mockModel.height = 2000
-        mockModel.regionCount = 8
+        mockModel.getWidth.return_value = 1000
+        mockModel.getHeight.return_value = 2000
+        mockModel.getRegionCount.return_value = 8
 
         # Call the method under test.
         regions = region_maker.RegionMaker.makeRegions(mockModel)

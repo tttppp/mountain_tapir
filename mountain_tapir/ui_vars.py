@@ -21,10 +21,8 @@ try:
 except ImportError:
     import Tkinter as TK
 
-from constants import Constants
-
 class UIVars:
-    def __init__(self, parent):
-        self.widthVar = TK.IntVar(parent, Constants.INITIAL_WIDTH)
-        self.heightVar = TK.IntVar(parent, Constants.INITIAL_HEIGHT)
-        self.regionsVar = TK.IntVar(parent, Constants.INITIAL_REGIONS)
+    def __init__(self, parent, model):
+        self.widthVar = TK.IntVar(parent, model.getWidth())
+        self.heightVar = TK.IntVar(parent, model.getHeight())
+        self.regionsVar = TK.IntVar(parent, model.getRegionCount())

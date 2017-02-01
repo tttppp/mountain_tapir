@@ -38,8 +38,8 @@ class TestController(unittest.TestCase):
         
         Initialise a single region with a preview pane a tenth the size."""
         mockModel = mock.Mock(name = 'Model')
-        mockModel.width = 1000
-        mockModel.height = 2000
+        mockModel.getWidth.return_value = 1000
+        mockModel.getHeight.return_value = 2000
         mockModel.regionToCanvas = {}
         mockImageFile = mock.Mock(name = 'ImageFile')
         mockModel.regionToImageFile = {(100, 300, 1000, 200): mockImageFile}
@@ -51,6 +51,7 @@ class TestController(unittest.TestCase):
         mockRecentImages = mock.Mock(name = 'RecentImages')
         # Pretend there's just one region (and it doesn't cover the whole canvas)
         mockRegionMaker.makeRegions.return_value = [(100, 300, 1000, 200)]
+        mockModel.getRegions.return_value = [(100, 300, 1000, 200)]
         mockImageCell = mock.Mock(name = 'ImageCell')
         mockTK.Frame.return_value = mockImageCell
         mockCanvas = mock.Mock(name = 'Canvas')
@@ -59,7 +60,7 @@ class TestController(unittest.TestCase):
         # Call the method under test.
         c.initialise(mockPreview, mockRecentImages)
         
-        mockRegionMaker.makeRegions.assert_any_call(mockModel)
+        mockModel.setRegions.assert_any_call([(100, 300, 1000, 200)])
         mockTK.Frame.assert_any_call(mockPreview.previewFrame, width=100, height=20)
         mockImageCell.place.assert_any_call(x=10, y=30)
         self.assertEqual(mockModel.regionToCanvas, {(10, 30, 100, 20): mockCanvas})
@@ -71,9 +72,9 @@ class TestController(unittest.TestCase):
     @mock.patch('mountain_tapir.controller.sample')
     def testShuffle(self, mockSample, mockPutImageInPreviewRegion):
         mockModel = mock.Mock(name = 'Model')
-        mockModel.width = 1000
-        mockModel.height = 2000
-        mockModel.regions = [(0,0,10,10), (10,0,10,10), (20,0,10,10), (30,0,10,10)]
+        mockModel.getWidth.return_value = 1000
+        mockModel.getHeight.return_value = 2000
+        mockModel.getRegions.return_value = [(0,0,10,10), (10,0,10,10), (20,0,10,10), (30,0,10,10)]
         # Fix the order of the returned image files.
         mockModel.regionToImageFile.values.side_effect = [['imageFile2','imageFile0','imageFile1','imageFile3']]
         mockModel.regionToCanvas = {(0,0,10,10): 'canvas0', (10,0,10,10): 'canvas1', (20,0,10,10): 'canvas2', (30,0,10,10): 'canvas3'}
@@ -101,9 +102,9 @@ class TestController(unittest.TestCase):
         mockImage.new.side_effect = [mockOutputImage]
         mockAsksaveasfile.side_effect = ['outputFile.png']
         mockModel = mock.Mock(name = 'Model')        
-        mockModel.width = 1000
-        mockModel.height = 2000
-        mockModel.regions = [(0,0,10,10), (10,0,10,10), (20,0,10,10), (30,0,10,10)]
+        mockModel.getWidth.return_value = 1000
+        mockModel.getHeight.return_value = 2000
+        mockModel.getRegions.return_value = [(0,0,10,10), (10,0,10,10), (20,0,10,10), (30,0,10,10)]
         # Fix the order of the returned image files.
         mockImages = [mock.Mock(name = 'ImageFile0'), mock.Mock(name = 'ImageFile1'),
                       mock.Mock(name = 'ImageFile2'), mock.Mock(name = 'ImageFile3')]
@@ -130,8 +131,8 @@ class TestController(unittest.TestCase):
     def testMakePreviewRegion(self):
         """Test the calculation of a region forming part of the preview."""
         mockModel = mock.Mock(name = 'mockModel')
-        mockModel.width = 40
-        mockModel.height = 10
+        mockModel.getWidth.return_value = 40
+        mockModel.getHeight.return_value = 10
         c = controller.Controller(mockModel, None)
         mockPreview = mock.Mock(name = 'mockPreview')
         mockPreview.previewContainer.winfo_width.side_effect = [30]
@@ -146,8 +147,8 @@ class TestController(unittest.TestCase):
     def testGetPreviewDimensions_thinCanvas(self):
         """Check that if the preview canvas is too thin the region is scaled down."""
         mockModel = mock.Mock(name = 'mockModel')
-        mockModel.width = 100
-        mockModel.height = 100
+        mockModel.getWidth.return_value = 100
+        mockModel.getHeight.return_value = 100
         c = controller.Controller(mockModel, None)
         mockPreview = mock.Mock(name = 'mockPreview')
         mockPreview.previewContainer.winfo_width.side_effect = [50]
@@ -162,8 +163,8 @@ class TestController(unittest.TestCase):
     def testGetPreviewDimensions_shortCanvas(self):
         """Check that if the preview canvas is too short the region is scaled down."""
         mockModel = mock.Mock(name = 'mockModel')
-        mockModel.width = 100
-        mockModel.height = 100
+        mockModel.getWidth.return_value = 100
+        mockModel.getHeight.return_value = 100
         c = controller.Controller(mockModel, None)
         mockPreview = mock.Mock(name = 'mockPreview')
         mockPreview.previewContainer.winfo_width.side_effect = [100]
@@ -178,8 +179,8 @@ class TestController(unittest.TestCase):
     def testGetPreviewDimensions_tooLargeCanvas(self):
         """Check that if the preview canvas is larger than the output size the region is not scaled."""
         mockModel = mock.Mock(name = 'mockModel')
-        mockModel.width = 100
-        mockModel.height = 100
+        mockModel.getWidth.return_value = 100
+        mockModel.getHeight.return_value = 100
         c = controller.Controller(mockModel, None)
         mockPreview = mock.Mock(name = 'mockPreview')
         mockPreview.previewContainer.winfo_width.side_effect = [200]

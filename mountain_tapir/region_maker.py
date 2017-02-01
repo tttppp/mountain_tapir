@@ -48,8 +48,8 @@ class RegionMaker:
         """
         def randNearMid(maximum):
             return (randrange(maximum) + randrange(maximum)) // 2
-        regions = [(0, 0, model.width, model.height)]
-        while len(regions) < model.regionCount:
+        regions = [(0, 0, model.getWidth(), model.getHeight())]
+        while len(regions) < model.getRegionCount():
             worstRegion, worstRegionDiff = RegionMaker.findWorstRegion(regions)
             for region in regions:
                 regionDiff = RegionMaker.ratioDiff(region[2], region[3])
@@ -72,33 +72,33 @@ class RegionMaker:
                 regions.append((worstRegion[0], worstRegion[1]+relativeSplitPoint[1], worstRegion[2], worstRegion[3]-relativeSplitPoint[1]))
             # Restart if any width or height is unacceptable
             if regions[-2][2] <= UNACCEPTABLE_WIDTH or regions[-2][3] <= UNACCEPTABLE_HEIGHT or regions[-1][2] <= UNACCEPTABLE_WIDTH or regions[-1][3] <= UNACCEPTABLE_HEIGHT:
-                regions = [(0, 0, model.width, model.height)]
+                regions = [(0, 0, model.getWidth(), model.getHeight())]
         return regions
     @staticmethod
     def makeGridRegions(model):
-        shortSide = int(sqrt(model.regionCount))
-        while model.regionCount % shortSide != 0:
+        shortSide = int(sqrt(model.getRegionCount()))
+        while model.getRegionCount() % shortSide != 0:
             shortSide -= 1
-        longSide = model.regionCount // shortSide
-        if model.width > model.height:
+        longSide = model.getRegionCount() // shortSide
+        if model.getWidth() > model.getHeight():
             columns = longSide
             rows = shortSide
         else:
             columns = shortSide
             rows = longSide
         # Need to set width and height of each cell programmatically to avoid rounding errors in calculation of cellWidth and cellHeight
-        return [(x*model.width//columns,
-                 y*model.height//rows,
-                 (x+1)*model.width//columns - x*model.width//columns,
-                 (y+1)*model.height//rows - y*model.height//rows)
+        return [(x*model.getWidth()//columns,
+                 y*model.getHeight()//rows,
+                 (x+1)*model.getWidth()//columns - x*model.getWidth()//columns,
+                 (y+1)*model.getHeight()//rows - y*model.getHeight()//rows)
                 for x in range(columns) for y in range(rows)]
     @staticmethod
     def makeFrameRegions(model):
-        if model.regionCount < 5:
+        if model.getRegionCount() < 5:
             return RegionMaker.makeGridRegions(model)
-        width, height = model.width, model.height
-        halfWidth, halfHeight = model.width // 2, model.height // 2
-        quarterWidth, quarterHeight = model.width // 4, model.height // 4
+        width, height = model.getWidth(), model.getHeight()
+        halfWidth, halfHeight = model.getWidth() // 2, model.getHeight() // 2
+        quarterWidth, quarterHeight = model.getWidth() // 4, model.getHeight() // 4
         centerRegion = (quarterWidth, quarterHeight, halfWidth, halfHeight)
         # Decide where to draw lines near each corner
         bestWorstScore = 999999
@@ -123,9 +123,9 @@ class RegionMaker:
             regions = [centerRegion, top, left, right, bottom]
             perimeter = (top[2]//2, right[3], bottom[2], left[3], top[2]-top[2]//2)
             splits = {'top': [0, top[2]], 'right': [0, right[3]], 'bottom': [0, bottom[2]], 'left': [0, left[3]]}
-            for i in range(model.regionCount - 5):
+            for i in range(model.getRegionCount() - 5):
                 # Find the distance around the perimeter to split a frame
-                perimeterDistance = (sum(perimeter) * (i)) // (model.regionCount - 5)
+                perimeterDistance = (sum(perimeter) * (i)) // (model.getRegionCount() - 5)
                 if perimeterDistance < perimeter[0]:
                     splits['top'].append(perimeterDistance + top[2]//2)
                 elif perimeterDistance < sum(perimeter[:2]):

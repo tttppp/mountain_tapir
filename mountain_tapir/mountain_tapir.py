@@ -41,8 +41,8 @@ class MountainTapir:
         screenHeight = parent.winfo_screenheight()
         parent.geometry('{0:d}x{1:d}+{2:d}+{3:d}'.format(INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT, int(screenWidth/2 - INITIAL_WINDOW_WIDTH/2), int(screenHeight/2 - INITIAL_WINDOW_HEIGHT/2)))
         
-        self.uiVars = UIVars(self.myParent)
         self.model = Model(self.config)
+        self.uiVars = UIVars(self.myParent, self.model)
         self.controller = Controller(self.model, self.uiVars)
         
         self.appContainer = TK.Frame(self.myParent)

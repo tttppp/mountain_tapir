@@ -61,7 +61,7 @@ class Controller:
         print('Shuffle selected')
         images = self.model.regionToImageFile.values()
         self.model.regionToImageFile.clear()
-        regions = set(self.model.regions)
+        regions = set(self.model.getRegions())
         for region in regions:
             canvas = self.model.regionToCanvas[region]
             self.putImageInPreviewRegion(None, canvas, region)
@@ -75,8 +75,8 @@ class Controller:
         print('Save selected')
         outputFile = asksaveasfile(defaultextension = '.jpg')
         if outputFile != None:
-            outputImage = Image.new('RGB', (self.model.width, self.model.height))
-            for region in self.model.regions:
+            outputImage = Image.new('RGB', (self.model.getWidth(), self.model.getHeight()))
+            for region in self.model.getRegions():
                 imageFile = self.model.regionToImageFile[region]
                 if imageFile == None:
                     print('Warning: Region without image {0}'.format(region))
@@ -86,19 +86,19 @@ class Controller:
             outputImage.save(outputFile)
     def addRegions(self, delta):
         print('Change if not going below one')
-        if self.model.regionCount + delta > 0:
-            self.model.regionCount += delta
-            self.uiVars.regionsVar.set(self.model.regionCount)
+        if self.model.getRegionCount() + delta > 0:
+            self.model.setRegionCount(self.model.getRegionCount() + delta)
+            self.uiVars.regionsVar.set(self.model.getRegionCount())
             self.redraw()
     def redraw(self):
-        self.model.regions = RegionMaker.makeRegions(self.model)
+        self.model.setRegions(RegionMaker.makeRegions(self.model))
         self.model.regionToImageFile.clear()
         self.refresh()
     def refresh(self):
         self.model.regionToCanvas.clear()
         width, height = self.__getPreviewDimensions()
         self.preview.clearAndCreateFrame(width, height)
-        for region in self.model.regions:
+        for region in self.model.getRegions():
             previewRegion = self.__makePreviewRegion(region)
             imageCell = TK.Frame(self.preview.previewFrame, width=previewRegion[2], height=previewRegion[3])
             canvas = TK.Canvas(imageCell, width=previewRegion[2], height=previewRegion[3], background=randColor())
@@ -122,14 +122,16 @@ class Controller:
     def __makePreviewRegion(self, region):
         """Create a region based on the model region and the current size of the preview pane."""
         width, height = self.__getPreviewDimensions()
-        return (region[0]*width//self.model.width, region[1]*height//self.model.height,
-                region[2]*width//self.model.width, region[3]*height//self.model.height)
+        return (region[0]*width//self.model.getWidth(), region[1]*height//self.model.getHeight(),
+                region[2]*width//self.model.getWidth(), region[3]*height//self.model.getHeight())
     def __getPreviewDimensions(self):
         """Get the current dimensions of the preview panel as a tuple."""
         containerWidth = self.preview.previewContainer.winfo_width()
         containerHeight = self.preview.previewContainer.winfo_height()
-        width = min(self.model.width, containerWidth, (self.model.width * containerHeight) / self.model.height)
-        height = min(self.model.height, containerHeight, (self.model.height * containerWidth) / self.model.width)
+        width = min(self.model.getWidth(), containerWidth,
+                    (self.model.getWidth() * containerHeight) / self.model.getHeight())
+        height = min(self.model.getHeight(), containerHeight,
+                     (self.model.getHeight() * containerWidth) / self.model.getWidth())
         return (width, height)
     def clicked(self, canvas, region):
         if self.model.selectedTool == Tool.LOAD:
@@ -178,25 +180,26 @@ class Controller:
             print('Currently selected tool is not supported yet: {0}'.format(self.model.selectedTool))
     def updateWidth(self, event):
         newWidth = int(self.uiVars.widthVar.get())
-        if newWidth != self.model.width:
-            self.__scaleRegions((self.model.width, self.model.height), (newWidth, self.model.height))
-            self.model.width = newWidth
+        if newWidth != self.model.getWidth():
+            self.__scaleRegions((self.model.getWidth(), self.model.getHeight()), (newWidth, self.model.getHeight()))
+            self.model.setWidth(newWidth)
             self.refresh()
     def updateHeight(self, event):
         newHeight = int(self.uiVars.heightVar.get())
-        if newHeight != self.model.height:
-            self.__scaleRegions((self.model.width, self.model.height), (self.model.width, newHeight))
-            self.model.height = newHeight
+        if newHeight != self.model.getHeight():
+            self.__scaleRegions((self.model.getWidth(), self.model.getHeight()), (self.model.getWidth(), newHeight))
+            self.model.setHeight(newHeight)
             self.refresh()
     def __scaleRegions(self, oldDimensions, newDimensions):
-        oldRegions, self.model.regions = self.model.regions, []
+        oldRegions, newRegions = self.model.getRegions(), []
         oldRegionToImageFile, self.model.regionToImageFile = self.model.regionToImageFile, defaultdict(lambda : None)
         oldRegionToCanvas, self.model.regionToCanvas = self.model.regionToCanvas, defaultdict(lambda : None)
         for oldRegion in oldRegions:
             newRegion = ((oldRegion[0]*newDimensions[0])//oldDimensions[0], (oldRegion[1]*newDimensions[1])//oldDimensions[1],
                          (oldRegion[2]*newDimensions[0])//oldDimensions[0], (oldRegion[3]*newDimensions[1])//oldDimensions[1])
-            self.model.regions.append(newRegion)
+            newRegions.append(newRegion)
             self.model.regionToImageFile[newRegion] = oldRegionToImageFile[oldRegion]
             self.model.regionToCanvas[newRegion] = oldRegionToCanvas[oldRegion]
+        self.model.setRegions(newRegions)
     def adjustPreviewSize(self, event=None):
         self.refresh()

@@ -103,6 +103,7 @@ class TestConfig(unittest.TestCase):
         class GetException(Exception):
             pass
         mockConfigparser.NoSectionError = GetException
+        mockConfigparser.NoOptionError = GetException
         mockRawConfigParser.get.side_effect = GetException
         mockRawConfigParser.read.return_value = ['HOME/.mountain_tapir/mountain_tapir.properties']
         
