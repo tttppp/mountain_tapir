@@ -55,7 +55,7 @@ class Controller:
         self.selectTool(Tool.PLACE)
         self.selectedImage = image
     def setAlgorithm(self, algorithm):
-        self.model.algorithm = algorithm
+        self.model.setAlgorithm(algorithm)
         self.redraw()
     def shuffle(self):
         print('Shuffle selected')

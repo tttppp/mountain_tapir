@@ -29,7 +29,7 @@ class Model:
         self.__regionCount = config.get('COLLAGE', 'regionCount', Constants.INITIAL_REGIONS, 'int')
         self.__width = config.get('COLLAGE', 'width', Constants.INITIAL_WIDTH, 'int')
         self.__height = config.get('COLLAGE', 'height', Constants.INITIAL_HEIGHT, 'int')
-        self.algorithm = Algorithm.COLLAGE
+        self.__algorithm = config.get('COLLAGE', 'algorithm', Algorithm.COLLAGE, 'int')
         self.__regions = None
         self.imageFiles = []
         self.regionToImageFile = defaultdict(lambda : None)
@@ -56,6 +56,13 @@ class Model:
     def getHeight(self):
         """Get the height of the output collage."""
         return self.__height
+    def setAlgorithm(self, algorithm):
+        """Set the algorithm used to generate the collage."""
+        self.__algorithm = algorithm
+        self.config.update('COLLAGE', 'algorithm', algorithm)
+    def getAlgorithm(self):
+        """Get the algorithm used to generate the collage."""
+        return self.__algorithm
     def setRegionCount(self, regionCount):
         """Set the number of regions in the collage."""
         self.__regionCount = regionCount

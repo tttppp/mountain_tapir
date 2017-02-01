@@ -35,7 +35,7 @@ class TestRegionMaker(unittest.TestCase):
     def testMakeRegions_collage(self, mockRandrange):
         """Test generating some regions using the collage algorithm."""
         mockModel = mock.Mock(name = 'Model')
-        mockModel.algorithm = algorithm.Algorithm.COLLAGE
+        mockModel.getAlgorithm.return_value = algorithm.Algorithm.COLLAGE
         mockModel.getWidth.return_value = 1000
         mockModel.getHeight.return_value = 2000
         mockModel.getRegionCount.return_value = 4
@@ -53,7 +53,7 @@ class TestRegionMaker(unittest.TestCase):
     def testMakeRegions_grid(self):
         """Test generating some regions using the grid algorithm."""
         mockModel = mock.Mock(name = 'Model')
-        mockModel.algorithm = algorithm.Algorithm.GRID
+        mockModel.getAlgorithm.return_value = algorithm.Algorithm.GRID
         mockModel.getWidth.return_value = 1000
         mockModel.getHeight.return_value = 2000
         mockModel.getRegionCount.return_value = 4
@@ -66,7 +66,7 @@ class TestRegionMaker(unittest.TestCase):
     def testMakeRegions_frame(self):
         """Test generating some regions using the frame algorithm."""
         mockModel = mock.Mock(name = 'Model')
-        mockModel.algorithm = algorithm.Algorithm.FRAME
+        mockModel.getAlgorithm.return_value = algorithm.Algorithm.FRAME
         mockModel.getWidth.return_value = 1000
         mockModel.getHeight.return_value = 2000
         mockModel.getRegionCount.return_value = 8

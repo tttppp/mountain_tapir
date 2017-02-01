@@ -31,14 +31,14 @@ class RegionMaker:
     @staticmethod
     def makeRegions(model):
         """Split the preview pane into disjoint regions."""
-        if model.algorithm == Algorithm.COLLAGE:
+        if model.getAlgorithm() == Algorithm.COLLAGE:
             return RegionMaker.makeCollageRegions(model)
-        elif model.algorithm == Algorithm.GRID:
+        elif model.getAlgorithm() == Algorithm.GRID:
             return RegionMaker.makeGridRegions(model)
-        elif model.algorithm == Algorithm.FRAME:
+        elif model.getAlgorithm() == Algorithm.FRAME:
             return RegionMaker.makeFrameRegions(model)
         else:
-            print('Unsupported algorithm: {0}'.format(model.algorithm))
+            print('Unsupported algorithm: {0}'.format(model.getAlgorithm()))
     @staticmethod
     def makeCollageRegions(model):
         """Start with the whole area as a region. Each iteration pick the 'worst' region and split it either horizontally
