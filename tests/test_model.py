@@ -46,6 +46,7 @@ class TestModel(unittest.TestCase):
         self.assertEqual(m.getRegionCount(), 8, 'Unexpected region count')
         self.assertEqual(m.getWidth(), 100, 'Unexpected width')
         self.assertEqual(m.getHeight(), 200, 'Unexpected height')
+        self.assertEqual(m.getAlgorithm(), Algorithm.GRID, 'Unexpected algorithm')
         self.assertEqual(m.getCurrentDirectory(), 'currentDirectory', msg = 'Unexpected current directory')
         self.assertEqual(m.getRegions(), None, 'Expected region list to be initialise to None')
 
