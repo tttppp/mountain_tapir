@@ -2,6 +2,10 @@
 Usage
 =====
 
-To use Mountain Tapir Collage Maker in a project::
+To launch Mountain Tapir Collage Maker from the command line::
 
-    import mountain_tapir
+    python -m mountain_tapir.mountain_tapir
+
+Assuming Mountain Tapir has write access then a configuration file will be stored in::
+
+    [user home]/.mountain_tapir/mountain_tapir.properties
