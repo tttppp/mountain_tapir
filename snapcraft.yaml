@@ -11,6 +11,7 @@ apps:
   mountain-tapir:
     command: desktop-launch "$SNAP/mountain_tapir.sh"
     plugs: [unity7, x11, gsettings, home]
+    desktop: mountain-tapir.desktop
   tclsh:
     # Wrap tclsh so that it works in the virtual environment (see http://stackoverflow.com/a/39217712/171296).
     command: tclsh.wrapper

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=mountain-tapir
+X-GNOME-FullName=Mountain Tapir Collage Maker
+Comment=Mountain Tapir Collage Maker is a tool for combining images into collages.
+Categories=GNOME;Utility;
+Exec=mountain-tapir
+Icon=${SNAP}/meta/gui/icon.png
+Terminal=false
+Type=Application
+Version=1.0.0
