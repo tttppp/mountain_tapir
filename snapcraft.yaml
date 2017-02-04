@@ -3,7 +3,7 @@ version: "1.0.0"
 summary: Mountain Tapir Collage Maker is a tool for combining images into collages.
 description: Mountain Tapir allows users to arrange images into a collage, and save the result as a new image.
 confinement: strict
-icon: "$SNAP/icon.png"
+icon: "docs/icon.png"
 grade: devel
 epoch: 0
 

@@ -63,3 +63,8 @@ target/
 
 # Spyder files
 .spyderproject
+
+# Snapcraft files
+*.snap
+prime/
+stage/
