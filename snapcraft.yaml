@@ -1,0 +1,36 @@
+name: mountain-tapir
+version: "1.0.0"
+summary: Mountain Tapir Collage Maker is a tool for combining images into collages.
+description: Mountain Tapir allows users to arrange images into a collage, and save the result as a new image.
+confinement: strict
+icon: "$SNAP/icon.png"
+grade: devel
+epoch: 0
+
+apps:
+  mountain-tapir:
+    command: desktop-launch "$SNAP/mountain_tapir.sh"
+    plugs: [unity7, x11, gsettings, home]
+  tclsh:
+    # Wrap tclsh so that it works in the virtual environment (see http://stackoverflow.com/a/39217712/171296).
+    command: tclsh.wrapper
+    plugs: [home, unity7, network, x11]
+
+parts:
+  mountain-tapir:
+    plugin: python
+    python-version: python2
+    source: .
+    stage-packages:
+     - python
+     - python-tk
+    python-packages:
+     #- Pillow<3.0
+     - image
+    after: [desktop-gtk2]
+  mountain-tapir-copy:
+    plugin: dump
+    source: mountain_tapir
+  wrappers:
+    plugin: dump
+    source: wrappers
