@@ -2,6 +2,13 @@
 History
 =======
 
+1.0.0 (2017-02-05)
+------------------
+
+* Create snapcraft file to allow easier installation.
+* Slightly larger icon.
+* Minor fix to documentation.
+
 0.2.0 (2017-02-01)
 ------------------
 
