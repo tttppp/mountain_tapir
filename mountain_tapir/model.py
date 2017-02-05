@@ -17,6 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from collections import defaultdict
+import os
 
 from algorithm import Algorithm
 from constants import Constants
@@ -34,7 +35,7 @@ class Model:
         self.imageFiles = []
         self.regionToImageFile = defaultdict(lambda : None)
         self.regionToCanvas = defaultdict(lambda : None)
-        self.__currentDirectory = config.get('FILE', 'initialdirectory', '/')
+        self.__currentDirectory = config.get('FILE', 'initialdirectory', os.path.expanduser('~'))
     def setCurrentDirectory(self, currentDirectory):
         """Set the directory to start looking for images in."""
         self.__currentDirectory = currentDirectory

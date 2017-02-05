@@ -25,13 +25,14 @@ Tests for `model` module.
 """
 
 import unittest
-from mock import Mock
+from mock import Mock, patch
 
 from mountain_tapir import model
 from mountain_tapir.algorithm import Algorithm
 
 class TestModel(unittest.TestCase):
-    def testInitModel(self):
+    @patch('mountain_tapir.model.os')
+    def testInitModel(self, mockOs):
         """Test that the config object is used to set certain values."""
         mockConfig = Mock(name = "Config")
         mockConfig.get.side_effect = [8, 100, 200, Algorithm.GRID, 'currentDirectory']
@@ -42,7 +43,7 @@ class TestModel(unittest.TestCase):
         mockConfig.get.assert_any_call('COLLAGE', 'width', 600, 'int')
         mockConfig.get.assert_any_call('COLLAGE', 'height', 400, 'int')
         mockConfig.get.assert_any_call('COLLAGE', 'algorithm', Algorithm.COLLAGE, 'int')
-        mockConfig.get.assert_any_call('FILE', 'initialdirectory', '/')
+        mockConfig.get.assert_any_call('FILE', 'initialdirectory', mockOs.path.expanduser('~'))
         self.assertEqual(m.getRegionCount(), 8, 'Unexpected region count')
         self.assertEqual(m.getWidth(), 100, 'Unexpected width')
         self.assertEqual(m.getHeight(), 200, 'Unexpected height')
