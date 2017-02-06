@@ -29,14 +29,15 @@ import mock
 
 from mountain_tapir import menu
 
+
 class TestMenu(unittest.TestCase):
     @mock.patch('mountain_tapir.menu.TK')
     def testInitialize(self, mockTK):
         """Test creating a new Menu object.
-        
+
         This test doesn't do anything, except look out for exceptions."""
-        mockParent = mock.Mock(name = 'Parent')
-        mockController = mock.Mock(name = 'Controller')
+        mockParent = mock.Mock(name='Parent')
+        mockController = mock.Mock(name='Controller')
 
         # Call the method under test.
         menu.Menu(mockParent, mockController)

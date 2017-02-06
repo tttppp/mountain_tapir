@@ -29,22 +29,23 @@ import mock
 from mountain_tapir import preview
 from mountain_tapir import constants
 
+
 class TestPreview(unittest.TestCase):
     @mock.patch('mountain_tapir.preview.TK')
     def testInitialize(self, mockTK):
         """Test creating a new Preview object.
-        
+
         This test also covers the createPreviewFrame method."""
-        mockParent = mock.Mock(name = 'Parent')
-        mockController = mock.Mock(name = 'Controller')
-        
-        mockPreviewContainer = mock.Mock(name = 'PreviewContainer')
-        mockPreviewFrame = mock.Mock(name = 'PreviewFrame')
+        mockParent = mock.Mock(name='Parent')
+        mockController = mock.Mock(name='Controller')
+
+        mockPreviewContainer = mock.Mock(name='PreviewContainer')
+        mockPreviewFrame = mock.Mock(name='PreviewFrame')
         mockTK.Frame.side_effect = [mockPreviewContainer, mockPreviewFrame]
-        
+
         # Call the method under test.
         preview.Preview(mockParent, mockController)
-        
+
         mockTK.Frame.assert_any_call(mockParent)
         mockPreviewContainer.pack.assert_any_call(side=mockTK.TOP, fill=mockTK.BOTH, expand=mockTK.YES)
         mockPreviewContainer.bind.assert_any_call('<Configure>', mockController.adjustPreviewSize)
@@ -57,16 +58,16 @@ class TestPreview(unittest.TestCase):
     @mock.patch('mountain_tapir.preview.Preview.createPreviewFrame')
     def testClearAndCreateFrame(self, mockCreatePreviewFrame, mockTK):
         """Test creating a new Preview object."""
-        mockParent = mock.Mock(name = 'Parent')
-        mockController = mock.Mock(name = 'Controller')
-        
+        mockParent = mock.Mock(name='Parent')
+        mockController = mock.Mock(name='Controller')
+
         p = preview.Preview(mockParent, mockController)
-        mockPreviewFrame = mock.Mock(name = 'PreviewFrame')
+        mockPreviewFrame = mock.Mock(name='PreviewFrame')
         p.previewFrame = mockPreviewFrame
-        
+
         # Call the method under test.
         p.clearAndCreateFrame(10, 20)
-        
+
         mockPreviewFrame.destroy.assert_any_call()
         mockCreatePreviewFrame.assert_any_call(10, 20)
 

@@ -30,29 +30,30 @@ import mock
 from mountain_tapir import region_maker
 from mountain_tapir import algorithm
 
+
 class TestRegionMaker(unittest.TestCase):
     @mock.patch('mountain_tapir.region_maker.randrange')
     def testMakeRegions_collage(self, mockRandrange):
         """Test generating some regions using the collage algorithm."""
-        mockModel = mock.Mock(name = 'Model')
+        mockModel = mock.Mock(name='Model')
         mockModel.getAlgorithm.return_value = algorithm.Algorithm.COLLAGE
         mockModel.getWidth.return_value = 1000
         mockModel.getHeight.return_value = 2000
         mockModel.getRegionCount.return_value = 4
-        
+
         # Pick an arbitrary integer sequence to be returned by the randrange
         # method. We ensure that all values are 'near' to half the supplied
         # value as this helps to avoid "unacceptable" regions.
-        mockRandrange.side_effect = (lambda m: ((m**2)%int(m//4)) + int(3*m//8))
+        mockRandrange.side_effect = (lambda m: ((m**2) % int(m//4)) + int(3*m//8))
 
         # Call the method under test.
         regions = region_maker.RegionMaker.makeRegions(mockModel)
-        
+
         self.assertEqual(regions, [(0, 0, 1000, 750), (0, 1222, 1000, 778), (0, 750, 375, 472), (375, 750, 625, 472)])
 
     def testMakeRegions_grid(self):
         """Test generating some regions using the grid algorithm."""
-        mockModel = mock.Mock(name = 'Model')
+        mockModel = mock.Mock(name='Model')
         mockModel.getAlgorithm.return_value = algorithm.Algorithm.GRID
         mockModel.getWidth.return_value = 1000
         mockModel.getHeight.return_value = 2000
@@ -60,12 +61,13 @@ class TestRegionMaker(unittest.TestCase):
 
         # Call the method under test.
         regions = region_maker.RegionMaker.makeRegions(mockModel)
-        
-        self.assertEqual(regions, [(0, 0, 500, 1000), (0, 1000, 500, 1000), (500, 0, 500, 1000), (500, 1000, 500, 1000)])
-        
+
+        self.assertEqual(regions, [(0, 0, 500, 1000), (0, 1000, 500, 1000), (500, 0, 500, 1000),
+                                   (500, 1000, 500, 1000)])
+
     def testMakeRegions_frame(self):
         """Test generating some regions using the frame algorithm."""
-        mockModel = mock.Mock(name = 'Model')
+        mockModel = mock.Mock(name='Model')
         mockModel.getAlgorithm.return_value = algorithm.Algorithm.FRAME
         mockModel.getWidth.return_value = 1000
         mockModel.getHeight.return_value = 2000
@@ -73,8 +75,10 @@ class TestRegionMaker(unittest.TestCase):
 
         # Call the method under test.
         regions = region_maker.RegionMaker.makeRegions(mockModel)
-        
-        self.assertEqual(regions, [(250, 500, 500, 1000), (0, 0, 500, 500), (500, 0, 500, 500), (750, 500, 250, 833), (750, 1333, 250, 167), (0, 1500, 1000, 500), (0, 500, 250, 834), (0, 1334, 250, 166)])
+
+        self.assertEqual(regions, [(250, 500, 500, 1000), (0, 0, 500, 500), (500, 0, 500, 500), (750, 500, 250, 833),
+                                   (750, 1333, 250, 167), (0, 1500, 1000, 500), (0, 500, 250, 834),
+                                   (0, 1334, 250, 166)])
 
 if __name__ == '__main__':
     import sys

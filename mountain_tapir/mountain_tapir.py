@@ -32,26 +32,28 @@ from ui_vars import UIVars
 INITIAL_WINDOW_WIDTH = 1060
 INITIAL_WINDOW_HEIGHT = 500
 
+
 class MountainTapir:
     def __init__(self, parent):
-        self.config = Config()        
-        
+        self.config = Config()
+
         self.myParent = parent
         screenWidth = parent.winfo_screenwidth()
         screenHeight = parent.winfo_screenheight()
-        parent.geometry('{0:d}x{1:d}+{2:d}+{3:d}'.format(INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT, int(screenWidth/2 - INITIAL_WINDOW_WIDTH/2), int(screenHeight/2 - INITIAL_WINDOW_HEIGHT/2)))
-        
+        parent.geometry('{0:d}x{1:d}+{2:d}+{3:d}'.format(INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT,
+                        int(screenWidth/2 - INITIAL_WINDOW_WIDTH/2), int(screenHeight/2 - INITIAL_WINDOW_HEIGHT/2)))
+
         self.model = Model(self.config)
         self.uiVars = UIVars(self.myParent, self.model)
         self.controller = Controller(self.model, self.uiVars)
-        
+
         self.appContainer = TK.Frame(self.myParent)
         self.appContainer.pack(fill=TK.BOTH, expand=TK.YES)
 
         self.recentImages = RecentImages(self.appContainer, self.controller)
         self.preview = Preview(self.appContainer, self.controller)
         self.menu = Menu(self.appContainer, self.controller)
-        
+
         self.controller.initialise(self.preview, self.recentImages)
 
 if __name__ == '__main__':

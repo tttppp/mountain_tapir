@@ -23,6 +23,7 @@ except ImportError:
 
 import os
 
+
 class Config:
     def __init__(self):
         self.config = configparser.RawConfigParser()
@@ -42,9 +43,10 @@ class Config:
                 self.persistFile = None
         else:
             self.persistFile = readFiles[0]
-    def get(self, section, key, default = None, valueType = 'String'):
+
+    def get(self, section, key, default=None, valueType='String'):
         """Get a value from the configuration.
-        
+
         :param section: The name of the config section.
         :param key: The name of the option within the section.
         :param default: Optional parameter specifying the default value."""
@@ -57,19 +59,20 @@ class Config:
                 value = self.config.get(section, key)
         except (configparser.NoSectionError, configparser.NoOptionError):
             value = default
-        if value == None:
+        if value is None:
             value = default
         return value
+
     def update(self, section, key, value):
         """Update a config entry and save the resulting options.
-        
+
         :param section: The name of the config section.
         :param key: The name of the option within the section.
         :param value: The value to set."""
         if not self.config.has_section(section):
             self.config.add_section(section)
         self.config.set(section, key, value)
-        if self.persistFile != None:
+        if self.persistFile is not None:
             try:
                 with open(self.persistFile, 'w') as outFile:
                     self.config.write(outFile)

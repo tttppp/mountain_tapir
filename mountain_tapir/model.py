@@ -23,6 +23,7 @@ from algorithm import Algorithm
 from constants import Constants
 from tool import Tool
 
+
 class Model:
     def __init__(self, config):
         self.config = config
@@ -33,48 +34,60 @@ class Model:
         self.__algorithm = config.get('COLLAGE', 'algorithm', Algorithm.COLLAGE, 'int')
         self.__regions = None
         self.imageFiles = []
-        self.regionToImageFile = defaultdict(lambda : None)
-        self.regionToCanvas = defaultdict(lambda : None)
+        self.regionToImageFile = defaultdict(lambda: None)
+        self.regionToCanvas = defaultdict(lambda: None)
         self.__currentDirectory = config.get('FILE', 'initialdirectory', os.path.expanduser('~'))
+
     def setCurrentDirectory(self, currentDirectory):
         """Set the directory to start looking for images in."""
         self.__currentDirectory = currentDirectory
         self.config.update('FILE', 'initialdirectory', currentDirectory)
+
     def getCurrentDirectory(self):
         """Get the directory to start looking for images in."""
         return self.__currentDirectory
+
     def setWidth(self, width):
         """Set the width of the output collage."""
         self.__width = width
         self.config.update('COLLAGE', 'width', width)
+
     def getWidth(self):
         """Get the width of the output collage."""
         return self.__width
+
     def setHeight(self, height):
         """Set the height of the output collage."""
         self.__height = height
         self.config.update('COLLAGE', 'height', height)
+
     def getHeight(self):
         """Get the height of the output collage."""
         return self.__height
+
     def setAlgorithm(self, algorithm):
         """Set the algorithm used to generate the collage."""
         self.__algorithm = algorithm
         self.config.update('COLLAGE', 'algorithm', algorithm)
+
     def getAlgorithm(self):
         """Get the algorithm used to generate the collage."""
         return self.__algorithm
+
     def setRegionCount(self, regionCount):
         """Set the number of regions in the collage."""
         self.__regionCount = regionCount
         self.config.update('COLLAGE', 'regionCount', regionCount)
+
     def getRegionCount(self):
         """Get the number of regions in the collage."""
         return self.__regionCount
+
     def setRegions(self, regions):
         """Set the regions in the collage."""
         self.__regions = regions
         self.setRegionCount(len(regions))
+
     def getRegions(self):
         """Get the regions in the collage."""
         return self.__regions

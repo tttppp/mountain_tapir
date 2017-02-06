@@ -26,40 +26,41 @@ except ImportError:
 THUMBNAIL_WIDTH = 60
 THUMBNAIL_HEIGHT = 60
 
+
 class RecentImages:
     def __init__(self, parent, controller):
         self.myParent = parent
-        self.imageFileToCanvas = defaultdict(lambda : None)
+        self.imageFileToCanvas = defaultdict(lambda: None)
 
         self.recentImagesFrame = TK.Frame(self.myParent)
         self.recentImagesFrame.pack(side=TK.TOP)
 
         self.createScrollFrame()
-        
+
         self.clearAllButton = TK.Button(self.recentImagesFrame, text='Clear', command=self.clearAll)
         self.clearAllButton.pack(side=TK.RIGHT)
-        
+
     def clearAll(self):
         for child in self.scrollFrame.winfo_children():
             child.destroy()
         self.createScrollFrame()
-        self.imageFileToCanvas = defaultdict(lambda : None)
-        
+        self.imageFileToCanvas = defaultdict(lambda: None)
+
     def createScrollFrame(self):
         # THUMBNAIL_HEIGHT+2 allows for a border around the thumbnail.
         self.scrollFrame = TK.Frame(self.recentImagesFrame, height=(THUMBNAIL_HEIGHT+2))
         self.scrollFrame.pack(side=TK.LEFT)
-    
+
     def addImage(self, imageFile, selectPlaceToolFunction):
         imageCell = TK.Frame(self.scrollFrame, width=THUMBNAIL_WIDTH, height=THUMBNAIL_HEIGHT)
         imageCellCanvas = TK.Canvas(imageCell, width=THUMBNAIL_WIDTH, height=THUMBNAIL_HEIGHT)
         imageCellCanvas.pack()
         imageFile.makeImage('thumbnail', (THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT), imageCellCanvas)
-        imageCellCanvas.bind('<Button-1>',lambda e, c=imageCellCanvas, r=imageFile: selectPlaceToolFunction(imageFile))
+        imageCellCanvas.bind('<Button-1>', lambda e, c=imageCellCanvas, r=imageFile: selectPlaceToolFunction(imageFile))
         imageCell.pack(side=TK.LEFT)
         self.imageFileToCanvas[imageFile] = imageCellCanvas
-    
+
     def updateImage(self, imageFile):
         imageCellCanvas = self.imageFileToCanvas[imageFile]
-        if imageCellCanvas != None:
+        if imageCellCanvas is not None:
             imageFile.makeImage('thumbnail', (THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT), imageCellCanvas)

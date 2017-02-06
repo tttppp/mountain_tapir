@@ -24,6 +24,7 @@ except ImportError:
 from collections import defaultdict
 from PIL import Image, ImageTk
 
+
 class ImageFile:
     """A class to provide image-based methods for a given file."""
     def __init__(self, fileName):
@@ -35,7 +36,7 @@ class ImageFile:
 
     def makeImage(self, purpose, dimensions, canvas):
         """Make a :class:`PIL.Image` and put it in the supplied canvas.
-        
+
         :param purpose: A string describing the purpose of the image. This is
             used for both logging and also when persisting the image so that TK
             doesn't garbage collect it.
@@ -44,7 +45,7 @@ class ImageFile:
             displayed.
         """
         image = self.getImageObject(dimensions, purpose)
-        if image != None:
+        if image is not None:
             photoImage = ImageTk.PhotoImage(image)
             self.images[purpose].append(photoImage)
             canvas.create_image(0, 0, image=photoImage, anchor="nw")
@@ -52,7 +53,7 @@ class ImageFile:
 
     def getImageObject(self, dimensions, purpose):
         """Return a :class:`PIL.Image` with the specified dimensions.
-        
+
         :param dimensions: An iterable pair - (width, height).
         :param purpose: A string describing the purpose of the image. This is
             used for logging.
@@ -81,7 +82,7 @@ class ImageFile:
 
     def __generateRotatedImage(self, image):
         """Use the current rotation of this `ImageFile` to rotate :class:`PIL.Image`.
-        
+
         :param image: The input image.
         :return image: The output image."""
         if self.rotation == 1:
@@ -94,7 +95,7 @@ class ImageFile:
 
     def rotate(self):
         """Rotate the image by 90 degrees.
-        
+
         Note that this rotates the image clockwise, as in a survey of random photos I found far more that needed a
         clockwise rotation than an anticlockwise rotation.
         """

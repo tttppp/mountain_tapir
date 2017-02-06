@@ -23,19 +23,20 @@ except ImportError:
 
 from constants import Constants
 
+
 class Preview:
     def __init__(self, parent, controller):
         self.myParent = parent
-        
+
         self.previewContainer = TK.Frame(self.myParent)
         self.previewContainer.pack(side=TK.TOP, fill=TK.BOTH, expand=TK.YES)
         self.previewContainer.bind('<Configure>', controller.adjustPreviewSize)
-        
+
         self.createPreviewFrame(Constants.INITIAL_WIDTH, Constants.INITIAL_HEIGHT)
 
     def clearAndCreateFrame(self, width, height):
         """Clear the preview frame, then create a new one using the given dimensions.
-        
+
         :param width: The width of the new frame.
         :param height: The height of the new frame.
         """
@@ -44,7 +45,7 @@ class Preview:
 
     def createPreviewFrame(self, width, height):
         """Create the preview frame using the given dimensions.
-        
+
         :param width: The width of the new frame.
         :param height: The height of the new frame.
         """

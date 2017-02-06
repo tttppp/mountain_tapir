@@ -23,8 +23,9 @@ from itertools import product
 from algorithm import Algorithm
 
 TARGET_RATIO = 2.0/3
-UNACCEPTABLE_WIDTH=50
-UNACCEPTABLE_HEIGHT=50
+UNACCEPTABLE_WIDTH = 50
+UNACCEPTABLE_HEIGHT = 50
+
 
 class RegionMaker:
     """A region is a tuple (left, top, width, height)."""
@@ -39,11 +40,12 @@ class RegionMaker:
             return RegionMaker.makeFrameRegions(model)
         else:
             print('Unsupported algorithm: {0}'.format(model.getAlgorithm()))
+
     @staticmethod
     def makeCollageRegions(model):
-        """Start with the whole area as a region. Each iteration pick the 'worst' region and split it either horizontally
-        or vertically at a random point. Remove the old region and add the two new regions.
-        
+        """Start with the whole area as a region. Each iteration pick the 'worst' region and split it either
+        horizontally or vertically at a random point. Remove the old region and add the two new regions.
+
         The worst region is defined to be the region furthest from the TARGET_RATIO.
         """
         def randNearMid(maximum):
@@ -65,15 +67,19 @@ class RegionMaker:
             if worstHorizontalSplitDiff < worstVerticalSplitDiff:
                 # Split vertically
                 regions.append((worstRegion[0], worstRegion[1], relativeSplitPoint[0], worstRegion[3]))
-                regions.append((worstRegion[0]+relativeSplitPoint[0], worstRegion[1], worstRegion[2]-relativeSplitPoint[0], worstRegion[3]))
+                regions.append((worstRegion[0]+relativeSplitPoint[0], worstRegion[1],
+                                worstRegion[2]-relativeSplitPoint[0], worstRegion[3]))
             else:
                 # Split horizontally
                 regions.append((worstRegion[0], worstRegion[1], worstRegion[2], relativeSplitPoint[1]))
-                regions.append((worstRegion[0], worstRegion[1]+relativeSplitPoint[1], worstRegion[2], worstRegion[3]-relativeSplitPoint[1]))
+                regions.append((worstRegion[0], worstRegion[1]+relativeSplitPoint[1], worstRegion[2],
+                                worstRegion[3]-relativeSplitPoint[1]))
             # Restart if any width or height is unacceptable
-            if regions[-2][2] <= UNACCEPTABLE_WIDTH or regions[-2][3] <= UNACCEPTABLE_HEIGHT or regions[-1][2] <= UNACCEPTABLE_WIDTH or regions[-1][3] <= UNACCEPTABLE_HEIGHT:
+            if regions[-2][2] <= UNACCEPTABLE_WIDTH or regions[-2][3] <= UNACCEPTABLE_HEIGHT or \
+                    regions[-1][2] <= UNACCEPTABLE_WIDTH or regions[-1][3] <= UNACCEPTABLE_HEIGHT:
                 regions = [(0, 0, model.getWidth(), model.getHeight())]
         return regions
+
     @staticmethod
     def makeGridRegions(model):
         shortSide = int(sqrt(model.getRegionCount()))
@@ -86,12 +92,14 @@ class RegionMaker:
         else:
             columns = shortSide
             rows = longSide
-        # Need to set width and height of each cell programmatically to avoid rounding errors in calculation of cellWidth and cellHeight
+        # Need to set width and height of each cell programmatically to avoid rounding errors in calculation of
+        # cellWidth and cellHeight
         return [(x*model.getWidth()//columns,
                  y*model.getHeight()//rows,
                  (x+1)*model.getWidth()//columns - x*model.getWidth()//columns,
                  (y+1)*model.getHeight()//rows - y*model.getHeight()//rows)
                 for x in range(columns) for y in range(rows)]
+
     @staticmethod
     def makeFrameRegions(model):
         if model.getRegionCount() < 5:
@@ -103,23 +111,23 @@ class RegionMaker:
         # Decide where to draw lines near each corner
         bestWorstScore = 999999
         bestRegions = None
-        for joinCornerHorizontal in product((True, False), repeat = 4):
-            top = (0 if joinCornerHorizontal[0] else quarterWidth,
-                   0,
-                   halfWidth + (quarterWidth if joinCornerHorizontal[0] else 0) + ((width - halfWidth - quarterWidth) if joinCornerHorizontal[1] else 0),
-                   quarterHeight)
-            left = (0,
-                    quarterHeight if joinCornerHorizontal[0] else 0,
-                    quarterWidth,
-                    halfHeight + (0 if joinCornerHorizontal[0] else quarterHeight) + (0 if joinCornerHorizontal[2] else (height - halfHeight - quarterHeight)))
-            right = (halfWidth + quarterWidth,
-                     quarterHeight if joinCornerHorizontal[1] else 0,
-                     quarterWidth,
-                     halfHeight + (0 if joinCornerHorizontal[1] else quarterHeight) + (0 if joinCornerHorizontal[3] else (height - halfHeight - quarterHeight)))
-            bottom = (0 if joinCornerHorizontal[2] else quarterWidth,
-                      halfHeight + quarterHeight,
-                      halfWidth + (quarterWidth if joinCornerHorizontal[2] else 0) + ((width - halfWidth - quarterWidth) if joinCornerHorizontal[3] else 0),
-                      quarterHeight)
+        for joinCornerHorizontal in product((True, False), repeat=4):
+            usedByCorner = ((quarterWidth if joinCornerHorizontal[0] else 0,
+                             0 if joinCornerHorizontal[0] else quarterHeight),
+                            ((width - halfWidth - quarterWidth) if joinCornerHorizontal[1] else 0,
+                             0 if joinCornerHorizontal[1] else quarterHeight),
+                            (quarterWidth if joinCornerHorizontal[2] else 0,
+                             0 if joinCornerHorizontal[2] else (height - halfHeight - quarterHeight)),
+                            ((width - halfWidth - quarterWidth) if joinCornerHorizontal[3] else 0,
+                             0 if joinCornerHorizontal[3] else (height - halfHeight - quarterHeight)))
+            top = (quarterWidth - usedByCorner[0][0], 0,
+                   halfWidth + usedByCorner[0][0] + usedByCorner[1][0], quarterHeight)
+            left = (0, quarterHeight - usedByCorner[0][1],
+                    quarterWidth, halfHeight + usedByCorner[0][1] + usedByCorner[2][1])
+            right = (halfWidth + quarterWidth, quarterHeight - usedByCorner[1][1],
+                     quarterWidth, halfHeight + usedByCorner[1][1] + usedByCorner[3][1])
+            bottom = (quarterWidth - usedByCorner[2][0], halfHeight + quarterHeight,
+                      halfWidth + usedByCorner[2][0] + usedByCorner[3][0], quarterHeight)
             regions = [centerRegion, top, left, right, bottom]
             perimeter = (top[2]//2, right[3], bottom[2], left[3], top[2]-top[2]//2)
             splits = {'top': [0, top[2]], 'right': [0, right[3]], 'bottom': [0, bottom[2]], 'left': [0, left[3]]}
@@ -158,6 +166,7 @@ class RegionMaker:
                 bestRegions = regions
                 bestWorstScore = worstRegionDiff
         return bestRegions
+
     @staticmethod
     def findWorstRegion(regions):
         worstRegion = None
@@ -168,6 +177,7 @@ class RegionMaker:
                 worstRegion = region
                 worstRegionDiff = regionDiff
         return worstRegion, worstRegionDiff
+
     @staticmethod
     def ratioDiff(width, height):
         if width == 0 or height == 0:

@@ -21,6 +21,7 @@ try:
 except ImportError:
     import Tkinter as TK
 
+
 class UIVars:
     def __init__(self, parent, model):
         self.widthVar = TK.IntVar(parent, model.getWidth())

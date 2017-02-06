@@ -28,6 +28,7 @@ import mock
 
 from mountain_tapir import image_file
 
+
 class TestImageFile(unittest.TestCase):
     @mock.patch('mountain_tapir.image_file.TK')
     @mock.patch('mountain_tapir.image_file.Image')
@@ -35,18 +36,18 @@ class TestImageFile(unittest.TestCase):
     @mock.patch('mountain_tapir.image_file.ImageFile.getImageObject')
     def testMakeImage(self, mockGetImageObject, mockImageTk, mockImage, mockTK):
         """Test that the properties file is loaded when the Config is initialised."""
-        mockCanvas = mock.Mock(name = "Canvas")
+        mockCanvas = mock.Mock(name="Canvas")
         dimensions = (2, 3)
-        
-        mockImageObject = mock.Mock(name = 'ImageObject')
+
+        mockImageObject = mock.Mock(name='ImageObject')
         mockGetImageObject.return_value = mockImageObject
-        mockPhotoImage = mock.Mock(name = 'PhotoImage')
+        mockPhotoImage = mock.Mock(name='PhotoImage')
         mockImageTk.PhotoImage.return_value = mockPhotoImage
-        
+
         imageFile = image_file.ImageFile('file/path')
         imageFile.makeImage('purpose', dimensions, mockCanvas)
-        
-        mockGetImageObject.assert_called_with((2,3), 'purpose')
+
+        mockGetImageObject.assert_called_with((2, 3), 'purpose')
         mockImageTk.PhotoImage.assert_called_with(mockImageObject)
         assert mockPhotoImage in imageFile.images['purpose'], \
             'The new photo image was not added to the persisted images list'
@@ -58,19 +59,19 @@ class TestImageFile(unittest.TestCase):
     @mock.patch('mountain_tapir.image_file.ImageTk')
     def testGetImageObject_tooWide(self, mockImageTk, mockImage, mockTK):
         """Test creating an image that needs to be cropped horizontally."""
-        mockPhotoImage = mock.Mock(name = "PhotoImage")
+        mockPhotoImage = mock.Mock(name="PhotoImage")
         mockImageTk.PhotoImage.return_value = mockPhotoImage
-        mockImg = mock.Mock(name = 'Img')
+        mockImg = mock.Mock(name='Img')
         mockImage.open.return_value = mockImg
         mockImg.size = (20, 30)
-        mockResizedImg = mock.Mock(name = 'ResizedImg')
+        mockResizedImg = mock.Mock(name='ResizedImg')
         mockImg.resize.return_value = mockResizedImg
         mockResizedImg.size = (26, 40)
         mockResizedImg.crop.return_value = 'Final image'
 
         imageFile = image_file.ImageFile('file/path')
         image = imageFile.getImageObject((10, 40), 'purpose')
-        
+
         mockImg.resize.assert_called_with((26, 40), mockImage.ANTIALIAS)
         mockResizedImg.crop.assert_called_with((8, 0, 18, 40))
         assert image == 'Final image'
@@ -80,19 +81,19 @@ class TestImageFile(unittest.TestCase):
     @mock.patch('mountain_tapir.image_file.ImageTk')
     def testGetImageObject_tooTall(self, mockImageTk, mockImage, mockTK):
         """Test creating an image that needs to be cropped vertically."""
-        mockPhotoImage = mock.Mock(name = "PhotoImage")
+        mockPhotoImage = mock.Mock(name="PhotoImage")
         mockImageTk.PhotoImage.return_value = mockPhotoImage
-        mockImg = mock.Mock(name = 'Img')
+        mockImg = mock.Mock(name='Img')
         mockImage.open.return_value = mockImg
         mockImg.size = (20, 30)
-        mockResizedImg = mock.Mock(name = 'ResizedImg')
+        mockResizedImg = mock.Mock(name='ResizedImg')
         mockImg.resize.return_value = mockResizedImg
         mockResizedImg.size = (40, 60)
         mockResizedImg.crop.return_value = 'Final image'
 
         imageFile = image_file.ImageFile('file/path')
         image = imageFile.getImageObject((40, 10), 'purpose')
-        
+
         mockImg.resize.assert_called_with((40, 60), mockImage.ANTIALIAS)
         mockResizedImg.crop.assert_called_with((0, 25, 40, 35))
         assert image == 'Final image'
@@ -106,20 +107,20 @@ class TestImageFile(unittest.TestCase):
 
         imageFile = image_file.ImageFile('file/path')
         image = imageFile.getImageObject((40, 10), 'purpose')
-        
-        assert image == None
+
+        self.assertEqual(image, None, 'Expected image not to be created.')
 
     @mock.patch('mountain_tapir.image_file.Image')
     def testRotate(self, mockImage):
         """Test rotating an image and getting the resulting image object."""
         imageFile = image_file.ImageFile('file/path')
-        mockImg = mock.Mock(name = 'Img')
-        
+        mockImg = mock.Mock(name='Img')
+
         # Call the rotate method once
         imageFile.rotate()
         # Generate the rotated image.
         result = imageFile._ImageFile__generateRotatedImage(mockImg)
-        
+
         # Check that the image was rotated before being returned.
         mockImg.transpose.assert_called_with(mockImage.ROTATE_270)
         assert result == mockImg.transpose()

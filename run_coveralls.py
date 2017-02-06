@@ -3,7 +3,9 @@
 # Taken from:
 # http://stackoverflow.com/questions/32757765/conditional-commands-in-tox-tox-travis-ci-and-coveralls
 
-import os, sys, platform
+import os
+import sys
+import platform
 
 from subprocess import call
 

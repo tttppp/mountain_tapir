@@ -29,6 +29,7 @@ import mock
 
 from mountain_tapir import mountain_tapir
 
+
 class TestMountainTapir(unittest.TestCase):
     @mock.patch('mountain_tapir.mountain_tapir.TK')
     @mock.patch('mountain_tapir.mountain_tapir.Controller')
@@ -38,15 +39,15 @@ class TestMountainTapir(unittest.TestCase):
     @mock.patch('mountain_tapir.mountain_tapir.UIVars')
     def testInitialize(self, mockUIVars, mockMenu, mockRecentImages, mockPreview, mockController, mockTK):
         """Test creating a new MountainTapir object."""
-        mockParent = mock.Mock(name = 'Parent')
+        mockParent = mock.Mock(name='Parent')
         mockParent.winfo_screenwidth.return_value = 1000
         mockParent.winfo_screenheight.return_value = 2000
-        mockAppContainer = mock.Mock(name = 'AppContainer')
+        mockAppContainer = mock.Mock(name='AppContainer')
         mockTK.Frame.return_value = mockAppContainer
 
         # Call the method under test.
         mountain_tapir.MountainTapir(mockParent)
-        
+
         mockParent.geometry.assert_any_call('1060x500+-30+750')
         mockAppContainer.pack.assert_any_call(fill=mockTK.BOTH, expand=mockTK.YES)
         mockController().initialise.assert_any_call(mockPreview(), mockRecentImages())
