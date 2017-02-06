@@ -40,7 +40,7 @@ test_requirements = [
 
 setup(
     name='mountain_tapir',
-    version='1.0.0',
+    version='1.0.1',
     description="Mountain Tapir Collage Maker is a tool for combining images into collages.",
     long_description=readme + '\n\n' + history,
     author="tttppp",
