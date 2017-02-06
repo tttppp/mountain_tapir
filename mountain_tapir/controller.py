@@ -137,7 +137,7 @@ class Controller:
         if self.model.selectedTool == Tool.LOAD:
             fileName = askopenfilename(parent=canvas, initialdir=self.model.getCurrentDirectory(),
                                        title='Choose an image.')
-            if fileName == '':
+            if fileName == ():
                 print('Cancelled opening image')
                 return
             self.model.setCurrentDirectory(path.dirname(fileName))

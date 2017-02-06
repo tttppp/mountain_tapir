@@ -128,6 +128,19 @@ class TestController(unittest.TestCase):
         # Check the output image was saved correctly.
         mockOutputImage.save.assert_any_call('outputFile.png')
 
+    @mock.patch('mountain_tapir.controller.asksaveasfile')
+    @mock.patch('mountain_tapir.controller.Image')
+    def testCancelSave(self, mockImage, mockAsksaveasfile):
+        """Test cancelling the call to save a collage."""
+        mockAsksaveasfile.return_value = None
+        c = controller.Controller(None, None)
+        
+        # Call the method under test.
+        c.save()
+        
+        mockAsksaveasfile.assert_any_call(defaultextension = '.jpg')
+        self.assertEqual(len(mockImage.new.mock_calls), 0, msg = 'Unexpected call to save')
+
     def testMakePreviewRegion(self):
         """Test the calculation of a region forming part of the preview."""
         mockModel = mock.Mock(name = 'mockModel')
@@ -217,6 +230,29 @@ class TestController(unittest.TestCase):
         mockModel.setCurrentDirectory.assert_called_with('newDir')
         mockRecentImages.addImage.assert_any_call('imageFile', mockSelectPlaceTool)
         mockPutImageInPreviewRegion.assert_any_call('imageFile', mockCanvas, region)
+
+    @mock.patch('mountain_tapir.controller.path')
+    @mock.patch('mountain_tapir.controller.askopenfilename')
+    @mock.patch('mountain_tapir.controller.ImageFile')
+    def testCancelLoad(self, mockImageFile, mockAskopenfilename, mockPath):
+        """Check that cancelling loading into a region doesn't cause an exception."""
+        mockModel = mock.Mock(name = 'mockModel')
+        mockModel.selectedTool = Tool.LOAD
+        mockModel.getCurrentDirectory.return_value = 'oldDir'
+        mockCanvas = mock.Mock(name = 'mockCanvas')
+        region = (10, 20, 30, 40)
+        c = controller.Controller(mockModel, None)
+        mockRecentImages = c.recentImages = mock.Mock(name = 'mockRecentImages')
+        mockAskopenfilename.return_value = ()
+        mockPutImageInPreviewRegion = c.putImageInPreviewRegion = mock.Mock(name = 'mockPutImageInPreviewRegion')
+        
+        # Call the method under test.
+        c.clicked(mockCanvas, region)
+        
+        mockAskopenfilename.assert_any_call(parent=mockCanvas, initialdir='oldDir', title='Choose an image.')
+        self.assertEqual(len(mockModel.setCurrentDirectory.mock_calls), 0, 'Unexpected call to setCurrentDirectory')
+        self.assertEqual(len(mockRecentImages.addImage.mock_calls), 0, 'Unexpected call to addImage')
+        self.assertEqual(len(mockPutImageInPreviewRegion.mock_calls), 0, 'Unexpected call to putImageInPreviewRegion')
 
     def testSwapFirstClick(self):
         """Check that clicking a region using the swap tool (when no region is stored) causes it to be stored."""
