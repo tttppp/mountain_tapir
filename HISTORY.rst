@@ -2,6 +2,12 @@
 History
 =======
 
+1.0.1 (2017-02-06)
+------------------
+
+* Update snap to be stable release.
+* Fix a minor issue with open file dialog.
+
 1.0.0 (2017-02-05)
 ------------------
 
