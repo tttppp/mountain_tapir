@@ -46,7 +46,7 @@ Collage: Clicking this button converts the collage to the default "Collage" mode
 
 Grid: Clicking this button converts the collage to a grid of regions. All regions will be the same width and height.
 
-Frame: This button generates a collage with a central picture surrounded by a border of other images.
+Frame: This button generates a collage with a central picture surrounded by a border of other images. Note that if there are fewer than five regions then this uses grid mode instead.
 
 Width and Height: These settings control the resolution in pixels of the finished collage.
 
