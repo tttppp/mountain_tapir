@@ -4,6 +4,10 @@
 Installation
 ============
 
+As a `snap <https://uappexplorer.com/app/mountain-tapir.tttppp>`_::
+
+    $ snap install mountain-tapir
+
 At the command line::
 
     $ easy_install mountain_tapir
