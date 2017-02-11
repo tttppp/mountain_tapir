@@ -21,8 +21,8 @@ try:
 except ImportError:
     import Tkinter as TK
 
-from algorithm import Algorithm
-from tool import Tool
+from .algorithm import Algorithm
+from .tool import Tool
 
 
 class Menu:

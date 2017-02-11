@@ -19,9 +19,9 @@
 from collections import defaultdict
 import os
 
-from algorithm import Algorithm
-from constants import Constants
-from tool import Tool
+from .algorithm import Algorithm
+from .constants import Constants
+from .tool import Tool
 
 
 class Model:

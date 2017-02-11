@@ -21,7 +21,7 @@ try:
 except ImportError:
     import Tkinter as TK
 
-from constants import Constants
+from .constants import Constants
 
 
 class Preview:

@@ -30,9 +30,9 @@ from os import path
 from PIL import Image
 from random import randrange, sample
 
-from image_file import ImageFile
-from region_maker import RegionMaker
-from tool import Tool
+from .image_file import ImageFile
+from .region_maker import RegionMaker
+from .tool import Tool
 
 
 def randColor():

@@ -20,7 +20,7 @@ from math import sqrt
 from random import randrange
 from itertools import product
 
-from algorithm import Algorithm
+from .algorithm import Algorithm
 
 TARGET_RATIO = 2.0/3
 UNACCEPTABLE_WIDTH = 50

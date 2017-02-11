@@ -21,13 +21,13 @@ try:
 except ImportError:
     import Tkinter as TK
 
-from config import Config
-from controller import Controller
-from menu import Menu
-from model import Model
-from preview import Preview
-from recent_images import RecentImages
-from ui_vars import UIVars
+from .config import Config
+from .controller import Controller
+from .menu import Menu
+from .model import Model
+from .preview import Preview
+from .recent_images import RecentImages
+from .ui_vars import UIVars
 
 INITIAL_WINDOW_WIDTH = 1060
 INITIAL_WINDOW_HEIGHT = 500
