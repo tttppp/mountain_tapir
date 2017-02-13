@@ -64,10 +64,32 @@ class TestController(unittest.TestCase):
         mockModel.setRegions.assert_any_call([(100, 300, 1000, 200)])
         mockTK.Frame.assert_any_call(mockPreview.previewFrame, width=100, height=20)
         mockImageCell.place.assert_any_call(x=10, y=30)
-        self.assertEqual(mockModel.regionToCanvas, {(10, 30, 100, 20): mockCanvas})
+        self.assertEqual(mockModel.regionToCanvas, {(100, 300, 1000, 200): mockCanvas})
         assert not mockPutImageInPreviewRegion.called, 'The method putImageInPreviewRegion '\
             + 'should not have been called, because regionToImageFile should have been cleared.'
         self.assertEqual(mockModel.regionToImageFile, {})
+
+    def testSetAlgorithm(self):
+        """Call set algorithm and check that a new collage is created with the specified algorithm.
+
+        Simulate two regions, one which has an image assigned to it, and check that the existing image is placed into
+        the new collage."""
+        algorithm = 1
+        mockModel = mock.Mock(name='Model')
+        mockModel.regionToImageFile = {'oldRegion': 'existingImage'}
+        mockModel.getRegions.return_value = ['regionA', 'regionB']
+        mockModel.regionToCanvas = {'regionA': 'canvasA', 'regionB': 'canvasB'}
+        c = controller.Controller(mockModel, None)
+        mockRedraw = c.redraw = mock.Mock(name='redrawMethod')
+        mockPutImageInPreviewRegion = c.putImageInPreviewRegion = mock.Mock(name='redrawMethod')
+
+        # Call the method under test.
+        c.setAlgorithm(algorithm)
+
+        mockModel.setAlgorithm.assert_any_call(algorithm)
+        mockRedraw.assert_any_call()
+        self.assertEqual(1, len(mockPutImageInPreviewRegion.mock_calls), 'Expected exactly one call to place an image.')
+        self.assertEqual('existingImage', mockPutImageInPreviewRegion.mock_calls[0][1][0])
 
     @mock.patch('mountain_tapir.controller.Controller.putImageInPreviewRegion')
     @mock.patch('mountain_tapir.controller.sample')

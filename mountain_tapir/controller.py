@@ -61,8 +61,19 @@ class Controller:
         self.selectedImage = image
 
     def setAlgorithm(self, algorithm):
+        """Create a new set of regions using the specified algorithm.
+
+        This will maintain the currently selected images in the new arrangement. It can also be used to create a new
+        arrangement for the algorithm that was previously selected (this is useful e.g. in collage mode)."""
         self.model.setAlgorithm(algorithm)
+        imageFiles = list(self.model.regionToImageFile.values())
         self.redraw()
+        for region in self.model.getRegions():
+            if len(imageFiles) == 0:
+                break
+            imageFile = imageFiles.pop()
+            canvas = self.model.regionToCanvas[region]
+            self.putImageInPreviewRegion(imageFile, canvas, region)
 
     def shuffle(self):
         print('Shuffle selected')
@@ -116,7 +127,7 @@ class Controller:
             canvas.pack()
             canvas.bind('<Button-1>', lambda e, c=canvas, r=region: self.clicked(c, r))
             imageCell.place(x=previewRegion[0], y=previewRegion[1])
-            self.model.regionToCanvas[previewRegion] = canvas
+            self.model.regionToCanvas[region] = canvas
             if region in self.model.regionToImageFile.keys():
                 imageFile = self.model.regionToImageFile[region]
                 self.putImageInPreviewRegion(imageFile, canvas, region)
