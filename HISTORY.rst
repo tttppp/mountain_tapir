@@ -2,6 +2,12 @@
 History
 =======
 
+1.0.2 (2017-02-13)
+------------------
+
+* Keep the same images loaded when changing algorithm.
+* Playing around with source code to make it look prettier.
+
 1.0.1 (2017-02-06)
 ------------------
 
