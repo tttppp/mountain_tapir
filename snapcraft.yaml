@@ -9,7 +9,7 @@ epoch: 0
 
 apps:
   mountain-tapir:
-    command: desktop-launch "$SNAP/mountain_tapir.sh"
+    command: mountain_tapir.sh
     plugs: [unity7, x11, gsettings, home]
     desktop: mountain-tapir.desktop
   tclsh:

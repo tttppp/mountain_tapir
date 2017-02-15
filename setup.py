@@ -31,7 +31,7 @@ with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
 requirements = [
-    'Pillow<3.0'
+    'Pillow>=4.0.0'
 ]
 
 test_requirements = [
