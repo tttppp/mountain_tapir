@@ -67,13 +67,7 @@ class Controller:
         arrangement for the algorithm that was previously selected (this is useful e.g. in collage mode)."""
         self.model.setAlgorithm(algorithm)
         imageFiles = list(self.model.regionToImageFile.values())
-        self.redraw()
-        for region in self.model.getRegions():
-            if len(imageFiles) == 0:
-                break
-            imageFile = imageFiles.pop()
-            canvas = self.model.regionToCanvas[region]
-            self.putImageInPreviewRegion(imageFile, canvas, region)
+        self.redrawUsingImages(imageFiles)
 
     def shuffle(self):
         print('Shuffle selected')
@@ -105,11 +99,27 @@ class Controller:
             outputImage.save(outputFile)
 
     def addRegions(self, delta):
-        print('Change if not going below one')
+        """Change the number of regions. Note that the number of regions will not be decrease below one.
+
+        :param delta: The change required in the number of regions (negative to decrease the number of regions)."""
         if self.model.getRegionCount() + delta > 0:
+            imageFiles = list(self.model.regionToImageFile.values())
             self.model.setRegionCount(self.model.getRegionCount() + delta)
             self.uiVars.regionsVar.set(self.model.getRegionCount())
-            self.redraw()
+            self.redrawUsingImages(imageFiles)
+
+    def redrawUsingImages(self, imageFiles):
+        """Redraw the preview pane and populate the regions using the supplied list of images.
+
+        :param imageFiles: The list of image files to use. If there are more images than regions then some will not be
+        used. If there are fewer images than regions then some regions will end up empty."""
+        self.redraw()
+        for region in self.model.getRegions():
+            if len(imageFiles) == 0:
+                break
+            imageFile = imageFiles.pop()
+            canvas = self.model.regionToCanvas[region]
+            self.putImageInPreviewRegion(imageFile, canvas, region)
 
     def redraw(self):
         self.model.setRegions(RegionMaker.makeRegions(self.model))
