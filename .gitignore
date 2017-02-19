@@ -67,5 +67,5 @@ target/
 # Snapcraft files
 *.snap
 *.assert
-prime/
+prime*/
 stage/
