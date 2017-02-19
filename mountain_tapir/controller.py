@@ -50,10 +50,12 @@ class Controller:
         self.redraw()
 
     def selectTool(self, tool):
+        """Select a tool."""
+        # Clear any highlighted region if we were previously using swap.
+        if self.model.selectedTool == Tool.SWAP and self.selectedCanvas is not None:
+            self.putImageInPreviewRegion(self.selectedImage, self.selectedCanvas, self.selectedRegion)
         self.model.selectedTool = tool
-        self.selectedImage = None
-        self.selectedCanvas = None
-        self.selectedRegion = None
+        self.__clearSelection()
         print(tool)
 
     def selectPlaceTool(self, image):
@@ -70,7 +72,6 @@ class Controller:
         self.redrawUsingImages(imageFiles)
 
     def shuffle(self):
-        print('Shuffle selected')
         images = self.model.regionToImageFile.values()
         self.model.regionToImageFile.clear()
         regions = set(self.model.getRegions())
@@ -83,6 +84,15 @@ class Controller:
             canvas = self.model.regionToCanvas[region]
             self.putImageInPreviewRegion(imageFile, canvas, region)
             usedRegions.add(region)
+        # If we were part way through a swap then it will be confusing after shuffling all the images.
+        if self.model.selectedTool == Tool.SWAP:
+            self.__clearSelection()
+
+    def __clearSelection(self):
+        """Clear the current selected region."""
+        self.selectedImage = None
+        self.selectedCanvas = None
+        self.selectedRegion = None
 
     def save(self):
         print('Save selected')
@@ -191,6 +201,8 @@ class Controller:
                 self.selectedImage = self.model.regionToImageFile[region]
                 self.selectedCanvas = canvas
                 self.selectedRegion = region
+                if self.selectedImage != None:
+                    canvas.create_rectangle(canvas.winfo_width(), canvas.winfo_height(), 0, 0, outline='red', width=10)
             else:
                 otherImageFile = self.model.regionToImageFile[region]
                 self.putImageInPreviewRegion(imageFile, canvas, region)

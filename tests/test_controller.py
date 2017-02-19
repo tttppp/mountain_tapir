@@ -69,6 +69,27 @@ class TestController(unittest.TestCase):
             + 'should not have been called, because regionToImageFile should have been cleared.'
         self.assertEqual(mockModel.regionToImageFile, {})
 
+    @mock.patch('mountain_tapir.controller.Controller.putImageInPreviewRegion')
+    def selectTool_changeFromSwapTool(self, mockPutImageInPreviewRegion):
+        """Check that changing from the swap tool removes the highlight from any selected region."""
+        mockModel = mock.Mock(name='Model')
+        mockModel.selectedTool = Tool.SWAP
+        c = controller.Controller(mockModel, None)
+        c.selectedImage = 'image'
+        c.selectedCanvas = 'canvas'
+        c.selectedRegion = 'region'
+
+        # Call the method under test.
+        c.selectTool(Tool.LOAD)
+
+        # Check that the selected region is cleared and the preview region is redrawn.
+        assert c.selectedImage is None
+        assert c.selectedCanvas is None
+        assert c.selectedRegion is None
+        mockPutImageInPreviewRegion.assert_any_call('image', 'canvas', 'region')
+        # Check that the LOAD tool is now selected.
+        self.assertEqual(Tool.LOAD, mockModel.selectedTool)
+
     def testAddRegions(self):
         """Test adding a region to the collage."""
         mockModel = mock.Mock(name='Model')
@@ -152,6 +173,30 @@ class TestController(unittest.TestCase):
         mockPutImageInPreviewRegion.assert_any_call('imageFile0', 'canvas1', (10, 0, 10, 10))
         mockPutImageInPreviewRegion.assert_any_call('imageFile1', 'canvas2', (20, 0, 10, 10))
         mockPutImageInPreviewRegion.assert_any_call('imageFile3', 'canvas3', (30, 0, 10, 10))
+
+    @mock.patch('mountain_tapir.controller.Controller.putImageInPreviewRegion')
+    def testShuffle_deselectAnySelectedRegion(self, mockPutImageInPreviewRegion):
+        """Check that shuffling the images resets the swap tool."""
+        mockModel = mock.Mock(name='Model')
+        mockModel.selectedTool = Tool.SWAP
+        # Pretend there's a single region, canvas and image.
+        mockModel.getRegions.return_value = ['regionA']
+        mockModel.regionToImageFile = {'regionA': 'imageA'}
+        mockModel.regionToCanvas = {'regionA': 'canvasA'}
+        c = controller.Controller(mockModel, None)
+        # Pretend that we're part way through a swap.
+        c.selectedImage = 'imageA'
+        c.selectedCanvas = 'canvasA'
+        c.selectedRegion = 'regionA'
+
+        # Call the method under test.
+        c.shuffle()
+
+        # Check that the selection has been cleared.
+        assert c.selectedImage is None
+        assert c.selectedCanvas is None
+        assert c.selectedRegion is None
+        self.assertEqual(Tool.SWAP, mockModel.selectedTool, msg='Expected selected tool to be unchanged by shuffling.')
 
     @mock.patch('mountain_tapir.controller.asksaveasfile')
     @mock.patch('mountain_tapir.controller.Image')
@@ -317,18 +362,23 @@ class TestController(unittest.TestCase):
     def testSwapFirstClick(self):
         """Check that clicking a region using the swap tool (when no region is stored) causes it to be stored."""
         region = (10, 20, 30, 40)
-        mockModel = mock.Mock(name='mockModel')
+        mockModel = mock.Mock(name='model')
         mockModel.selectedTool = Tool.SWAP
         mockModel.regionToImageFile = {region: 'imageFile'}
         c = controller.Controller(mockModel, None)
         c.selectedImage = c.selectedCanvas = c.selectedRegion = None
+        mockCanvas = mock.Mock(name='canvas')
+        mockCanvas.winfo_width.return_value = 5
+        mockCanvas.winfo_height.return_value = 6
 
         # Call the method under test.
-        c.clicked('canvas', region)
+        c.clicked(mockCanvas, region)
 
         self.assertEqual(c.selectedImage, 'imageFile')
-        self.assertEqual(c.selectedCanvas, 'canvas')
+        self.assertEqual(c.selectedCanvas, mockCanvas)
         self.assertEqual(c.selectedRegion, region)
+        # Check that the selected region is highlighted.
+        mockCanvas.create_rectangle.assert_any_call(5, 6, 0, 0, outline='red', width=10)
 
     def testSwapSecondClick(self):
         """Check that clicking a region using the swap tool when another region is stored, causes them to be swapped."""
