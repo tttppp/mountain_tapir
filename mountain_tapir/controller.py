@@ -201,7 +201,7 @@ class Controller:
                 self.selectedImage = self.model.regionToImageFile[region]
                 self.selectedCanvas = canvas
                 self.selectedRegion = region
-                if self.selectedImage != None:
+                if self.selectedImage is not None:
                     canvas.create_rectangle(canvas.winfo_width(), canvas.winfo_height(), 0, 0, outline='red', width=10)
             else:
                 otherImageFile = self.model.regionToImageFile[region]
