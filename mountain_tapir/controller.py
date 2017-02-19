@@ -66,7 +66,7 @@ class Controller:
         This will maintain the currently selected images in the new arrangement. It can also be used to create a new
         arrangement for the algorithm that was previously selected (this is useful e.g. in collage mode)."""
         self.model.setAlgorithm(algorithm)
-        imageFiles = list(self.model.regionToImageFile.values())
+        imageFiles = set(self.model.regionToImageFile.values())
         self.redrawUsingImages(imageFiles)
 
     def shuffle(self):
@@ -103,7 +103,7 @@ class Controller:
 
         :param delta: The change required in the number of regions (negative to decrease the number of regions)."""
         if self.model.getRegionCount() + delta > 0:
-            imageFiles = list(self.model.regionToImageFile.values())
+            imageFiles = set(self.model.regionToImageFile.values())
             self.model.setRegionCount(self.model.getRegionCount() + delta)
             self.uiVars.regionsVar.set(self.model.getRegionCount())
             self.redrawUsingImages(imageFiles)

@@ -69,6 +69,42 @@ class TestController(unittest.TestCase):
             + 'should not have been called, because regionToImageFile should have been cleared.'
         self.assertEqual(mockModel.regionToImageFile, {})
 
+    def testAddRegions(self):
+        """Test adding a region to the collage."""
+        mockModel = mock.Mock(name='Model')
+        # The first two calls to getRegionCount are before the extra region is added.
+        mockModel.getRegionCount.side_effect = (2, 2, 3)
+        mockModel.regionToImageFile = {'regionA': 'imageA', 'regionB': 'imageB'}
+        mockUIVars = mock.Mock(name='UIVars')
+        c = controller.Controller(mockModel, mockUIVars)
+        mockRedrawUsingImages = c.redrawUsingImages = mock.Mock(name='redrawUsingImages')
+
+        # Call the method under test.
+        c.addRegions(1)
+
+        # Check that the number of regions is set to three.
+        mockModel.setRegionCount.assert_any_call(3)
+        mockUIVars.regionsVar.set.assert_any_call(3)
+        # Check that the preview is redrawn containing both existing images.
+        mockRedrawUsingImages.assert_any_call(set(['imageA', 'imageB']))
+
+    def testRemoveTooManyRegions(self):
+        """Check that trying to remove a region has no effect if there is only one."""
+        mockModel = mock.Mock(name='Model')
+        # The first two calls to getRegionCount are before the extra region is added.
+        mockModel.getRegionCount.return_value = 1
+        mockUIVars = mock.Mock(name='UIVars')
+        c = controller.Controller(mockModel, mockUIVars)
+        mockRedrawUsingImages = c.redrawUsingImages = mock.Mock(name='redrawUsingImages')
+
+        # Call the method under test.
+        c.addRegions(-1)
+
+        # Check that nothing has been changed.
+        assert not mockModel.setRegionCount.called
+        assert not mockUIVars.regionsVar.set.called
+        assert not mockRedrawUsingImages.called
+
     def testSetAlgorithm(self):
         """Call set algorithm and check that a new collage is created with the specified algorithm.
 
