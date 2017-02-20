@@ -50,7 +50,7 @@ class MountainTapir:
         self.appContainer = TK.Frame(self.myParent)
         self.appContainer.pack(fill=TK.BOTH, expand=TK.YES)
 
-        self.recentImages = RecentImages(self.appContainer, self.controller)
+        self.recentImages = RecentImages(self.appContainer)
         self.preview = Preview(self.appContainer, self.controller)
         self.menu = Menu(self.appContainer, self.controller)
 

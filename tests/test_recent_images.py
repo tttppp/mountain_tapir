@@ -36,7 +36,6 @@ class TestRecentImages(unittest.TestCase):
 
         This test also covers the createScrollFrame method."""
         mockParent = mock.Mock(name='Parent')
-        mockController = mock.Mock(name='Controller')
 
         mockRecentImagesFrame = mock.Mock(name='RecentImagesFrame')
         mockScrollFrame = mock.Mock(name='ScrollFrame')
@@ -45,7 +44,7 @@ class TestRecentImages(unittest.TestCase):
         mockTK.Button.return_value = mockClearAllButton
 
         # Call the method under test.
-        r = recent_images.RecentImages(mockParent, mockController)
+        r = recent_images.RecentImages(mockParent)
 
         mockTK.Frame.assert_any_call(mockParent)
         mockRecentImagesFrame.pack.assert_any_call(side=mockTK.TOP)
@@ -59,30 +58,24 @@ class TestRecentImages(unittest.TestCase):
     def testClearAll(self, mockCreateScrollFrame, mockTK):
         """Test calling the clearAll method, as would happen when clicking the button."""
         mockParent = mock.Mock(name='Parent')
-        mockController = mock.Mock(name='Controller')
-        r = recent_images.RecentImages(mockParent, mockController)
+        r = recent_images.RecentImages(mockParent)
         # Clear the call to createScrollFrame, as we want to test it later.
         mockCreateScrollFrame.reset_mock()
 
         mockScrollFrame = mock.Mock(name='ScrollFrame')
         r.scrollFrame = mockScrollFrame
-        mockChildA = mock.Mock(name='Child A')
-        mockChildB = mock.Mock(name='Child B')
-        mockScrollFrame.winfo_children.return_value = [mockChildA, mockChildB]
 
         # Call the method under test.
         r.clearAll()
 
-        mockChildA.destroy.assert_any_call()
-        mockChildB.destroy.assert_any_call()
+        mockScrollFrame.destroy.assert_any_call()
         mockCreateScrollFrame.assert_any_call()
 
     @mock.patch('mountain_tapir.recent_images.TK')
     def testAddImage(self, mockTK):
         """Test the behaviour when adding an image to the recent images pane."""
         mockParent = mock.Mock(name='Parent')
-        mockController = mock.Mock(name='Controller')
-        r = recent_images.RecentImages(mockParent, mockController)
+        r = recent_images.RecentImages(mockParent)
         mockScrollFrame = mock.Mock(name='ScrollFrame')
         r.scrollFrame = mockScrollFrame
         mockImageFile = mock.Mock(name='ImageFile')
@@ -104,6 +97,19 @@ class TestRecentImages(unittest.TestCase):
                                                               recent_images.THUMBNAIL_HEIGHT), mockImageCellCanvas)
         assert mockImageCellCanvas.bind.called, 'Expected bind to have been called.'
         mockImageCell.pack.assert_any_call(side=mockTK.LEFT)
+
+    def testUpdateImage(self):
+        """Check that updateImage causes the thumbnail to be redrawn from the ImageFile."""
+        r = recent_images.RecentImages(None)
+        mockImageFile = mock.Mock(name='imageFile')
+        mockCanvas = mock.Mock(name='canvas')
+        r.imageFileToCanvas = {mockImageFile: mockCanvas}
+
+        r.updateImage(mockImageFile)
+
+        mockImageFile.makeImage.assert_any_call('thumbnail',
+                                                (recent_images.THUMBNAIL_WIDTH, recent_images.THUMBNAIL_HEIGHT),
+                                                mockCanvas)
 
 if __name__ == '__main__':
     import sys

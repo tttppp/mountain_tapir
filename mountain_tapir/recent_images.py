@@ -28,7 +28,7 @@ THUMBNAIL_HEIGHT = 60
 
 
 class RecentImages:
-    def __init__(self, parent, controller):
+    def __init__(self, parent):
         self.myParent = parent
         self.imageFileToCanvas = defaultdict(lambda: None)
 
@@ -41,8 +41,7 @@ class RecentImages:
         self.clearAllButton.pack(side=TK.RIGHT)
 
     def clearAll(self):
-        for child in self.scrollFrame.winfo_children():
-            child.destroy()
+        self.scrollFrame.destroy()
         self.createScrollFrame()
         self.imageFileToCanvas = defaultdict(lambda: None)
 
