@@ -98,7 +98,8 @@ class TestRecentImages(unittest.TestCase):
         assert mockImageCellCanvas.bind.called, 'Expected bind to have been called.'
         mockImageCell.pack.assert_any_call(side=mockTK.LEFT)
 
-    def testUpdateImage(self):
+    @mock.patch('mountain_tapir.recent_images.TK')
+    def testUpdateImage(self, mockTK):
         """Check that updateImage causes the thumbnail to be redrawn from the ImageFile."""
         r = recent_images.RecentImages(None)
         mockImageFile = mock.Mock(name='imageFile')
