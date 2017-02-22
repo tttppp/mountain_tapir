@@ -2,6 +2,13 @@
 History
 =======
 
+1.0.3 (2017-02-22)
+------------------
+
+* Maintain the selected images when changing layout and number of regions.
+* Remove support for Python 2.6.
+* Fix button to clear recent images.
+
 1.0.2 (2017-02-13)
 ------------------
 
