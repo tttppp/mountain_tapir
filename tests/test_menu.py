@@ -31,16 +31,24 @@ from mountain_tapir import menu
 
 
 class TestMenu(unittest.TestCase):
+    @mock.patch('mountain_tapir.menu.os')
+    @mock.patch('mountain_tapir.menu.ImageTk')
     @mock.patch('mountain_tapir.menu.TK')
-    def testInitialize(self, mockTK):
+    def testInitialize(self, mockTK, mockImageTk, mockOs):
         """Test creating a new Menu object.
 
-        This test doesn't do anything, except look out for exceptions."""
+        This test mainly looks out for exceptions, but also checks that the right images are loaded for the buttons."""
         mockParent = mock.Mock(name='Parent')
         mockController = mock.Mock(name='Controller')
+        mockOs.sep = '/'
 
         # Call the method under test.
         menu.Menu(mockParent, mockController)
+
+        # Just check that the expected images are loaded, don't bother checking which buttons they're bound to.
+        mockImageTk.PhotoImage.assert_any_call(file='mountain_tapir/resources/algorithm_collage.png')
+        mockImageTk.PhotoImage.assert_any_call(file='mountain_tapir/resources/algorithm_grid.png')
+        mockImageTk.PhotoImage.assert_any_call(file='mountain_tapir/resources/algorithm_frame.png')
 
 if __name__ == '__main__':
     import sys

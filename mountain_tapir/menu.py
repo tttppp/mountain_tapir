@@ -21,6 +21,9 @@ try:
 except ImportError:
     import Tkinter as TK
 
+import os
+from PIL import ImageTk
+
 from .algorithm import Algorithm
 from .tool import Tool
 
@@ -49,15 +52,12 @@ class Menu:
         self.shuffleButton = TK.Button(self.menuFrameA, text='Shuffle', command=controller.shuffle)
         self.shuffleButton.pack(side=TK.LEFT)
 
-        self.collageAlgorithmButton = TK.Button(self.menuFrameA, text='Collage',
-                                                command=lambda: controller.setAlgorithm(Algorithm.COLLAGE))
-        self.collageAlgorithmButton.pack(side=TK.LEFT)
-        self.gridAlgorithmButton = TK.Button(self.menuFrameA, text='Grid',
-                                             command=lambda: controller.setAlgorithm(Algorithm.GRID))
-        self.gridAlgorithmButton.pack(side=TK.LEFT)
-        self.frameAlgorithmButton = TK.Button(self.menuFrameA, text='Frame',
-                                              command=lambda: controller.setAlgorithm(Algorithm.FRAME))
-        self.frameAlgorithmButton.pack(side=TK.LEFT)
+        self.collageAlgorithmButton = self.__createAlgorithmButton(Algorithm.COLLAGE, 'Collage',
+                                                                   'algorithm_collage.png', controller)
+        self.gridAlgorithmButton = self.__createAlgorithmButton(Algorithm.GRID, 'Grid',
+                                                                'algorithm_grid.png', controller)
+        self.frameAlgorithmButton = self.__createAlgorithmButton(Algorithm.FRAME, 'Frame',
+                                                                 'algorithm_frame.png', controller)
 
         # The second row of controls.
         self.menuFrameB = TK.Frame(self.myParent)
@@ -92,3 +92,12 @@ class Menu:
         # Pack the two rows of controls.
         self.menuFrameB.pack(side=TK.BOTTOM)
         self.menuFrameA.pack(side=TK.BOTTOM)
+
+    def __createAlgorithmButton(self, algorithm, label, resource, controller):
+        algorithmButton = TK.Button(self.menuFrameA, text=label,
+                                    command=lambda: controller.setAlgorithm(algorithm))
+        path = 'mountain_tapir' + os.sep + 'resources' + os.sep + resource
+        algorithmButton.image = ImageTk.PhotoImage(file=path)
+        algorithmButton.config(image=algorithmButton.image, width='26', height='26')
+        algorithmButton.pack(side=TK.LEFT)
+        return algorithmButton
