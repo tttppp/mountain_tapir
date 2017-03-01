@@ -16,12 +16,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
+
 try:
     import tkinter as TK
 except ImportError:
     import Tkinter as TK
 
-from .constants import Constants
+from mountain_tapir.constants import Constants
 
 
 class Preview:

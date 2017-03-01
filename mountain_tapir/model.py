@@ -16,12 +16,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
+
 from collections import defaultdict
 import os
 
-from .algorithm import Algorithm
-from .constants import Constants
-from .tool import Tool
+from mountain_tapir.algorithm import Algorithm
+from mountain_tapir.constants import Constants
+from mountain_tapir.tool import Tool
 
 
 class Model:

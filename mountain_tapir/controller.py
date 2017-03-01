@@ -16,23 +16,25 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
+
 try:
     import tkinter as TK
 except ImportError:
     import Tkinter as TK
 try:
-    from tkinter.filedialog import askopenfilename, asksaveasfile
+    from tkinter.filedialog import askopenfilename, asksaveasfilename
 except ImportError:
-    from tkFileDialog import askopenfilename, asksaveasfile
+    from tkFileDialog import askopenfilename, asksaveasfilename
 
 from collections import defaultdict
 from os import path
 from PIL import Image
 from random import randrange, sample
 
-from .image_file import ImageFile
-from .region_maker import RegionMaker
-from .tool import Tool
+from mountain_tapir.image_file import ImageFile
+from mountain_tapir.region_maker import RegionMaker
+from mountain_tapir.tool import Tool
 
 
 def randColor():
@@ -96,7 +98,7 @@ class Controller:
 
     def save(self):
         print('Save selected')
-        outputFile = asksaveasfile(defaultextension='.jpg')
+        outputFile = asksaveasfilename(defaultextension='.jpg')
         if outputFile is not None:
             outputImage = Image.new('RGB', (self.model.getWidth(), self.model.getHeight()))
             for region in self.model.getRegions():
@@ -174,9 +176,9 @@ class Controller:
         containerWidth = self.preview.previewContainer.winfo_width()
         containerHeight = self.preview.previewContainer.winfo_height()
         width = min(self.model.getWidth(), containerWidth,
-                    (self.model.getWidth() * containerHeight) / self.model.getHeight())
+                    (self.model.getWidth() * containerHeight) // self.model.getHeight())
         height = min(self.model.getHeight(), containerHeight,
-                     (self.model.getHeight() * containerWidth) / self.model.getWidth())
+                     (self.model.getHeight() * containerWidth) // self.model.getWidth())
         return (width, height)
 
     def clicked(self, canvas, region):

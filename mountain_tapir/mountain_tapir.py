@@ -16,18 +16,20 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
+
 try:
     import tkinter as TK
 except ImportError:
     import Tkinter as TK
 
-from .config import Config
-from .controller import Controller
-from .menu import Menu
-from .model import Model
-from .preview import Preview
-from .recent_images import RecentImages
-from .ui_vars import UIVars
+from mountain_tapir.config import Config
+from mountain_tapir.controller import Controller
+from mountain_tapir.menu import Menu
+from mountain_tapir.model import Model
+from mountain_tapir.preview import Preview
+from mountain_tapir.recent_images import RecentImages
+from mountain_tapir.ui_vars import UIVars
 
 INITIAL_WINDOW_WIDTH = 1060
 INITIAL_WINDOW_HEIGHT = 500

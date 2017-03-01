@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
+
 try:
     import tkinter as TK
 except ImportError:
@@ -24,8 +26,8 @@ except ImportError:
 import os
 from PIL import ImageTk
 
-from .algorithm import Algorithm
-from .tool import Tool
+from mountain_tapir.algorithm import Algorithm
+from mountain_tapir.tool import Tool
 
 
 class Menu:
@@ -94,10 +96,16 @@ class Menu:
         self.menuFrameA.pack(side=TK.BOTTOM)
 
     def __createAlgorithmButton(self, algorithm, label, resource, controller):
+        """Create a button for changing algorithm.
+
+        :param algorithm: The algorithm to change to when clicking the button.
+        :param label: TODO Display this in a tooltip.
+        :param resource: The file name of the image resource.
+        :param controller: The main controller for the application."""
         algorithmButton = TK.Button(self.menuFrameA, text=label,
                                     command=lambda: controller.setAlgorithm(algorithm))
         path = 'mountain_tapir' + os.sep + 'resources' + os.sep + resource
         algorithmButton.image = ImageTk.PhotoImage(file=path)
-        algorithmButton.config(image=algorithmButton.image, width='26', height='26')
+        algorithmButton.config(image=algorithmButton.image, width=26, height=26)
         algorithmButton.pack(side=TK.LEFT)
         return algorithmButton

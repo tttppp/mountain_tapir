@@ -16,11 +16,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
+
 from math import sqrt
 from random import randrange
 from itertools import product
 
-from .algorithm import Algorithm
+from mountain_tapir.algorithm import Algorithm
 
 TARGET_RATIO = 2.0/3
 UNACCEPTABLE_WIDTH = 50

@@ -198,7 +198,7 @@ class TestController(unittest.TestCase):
         assert c.selectedRegion is None
         self.assertEqual(Tool.SWAP, mockModel.selectedTool, msg='Expected selected tool to be unchanged by shuffling.')
 
-    @mock.patch('mountain_tapir.controller.asksaveasfile')
+    @mock.patch('mountain_tapir.controller.asksaveasfilename')
     @mock.patch('mountain_tapir.controller.Image')
     @mock.patch('mountain_tapir.controller.TK')
     def testSave(self, mockTK, mockImage, mockAsksaveasfile):
@@ -233,7 +233,7 @@ class TestController(unittest.TestCase):
         # Check the output image was saved correctly.
         mockOutputImage.save.assert_any_call('outputFile.png')
 
-    @mock.patch('mountain_tapir.controller.asksaveasfile')
+    @mock.patch('mountain_tapir.controller.asksaveasfilename')
     @mock.patch('mountain_tapir.controller.Image')
     def testCancelSave(self, mockImage, mockAsksaveasfile):
         """Test cancelling the call to save a collage."""
