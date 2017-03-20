@@ -20,11 +20,11 @@ apps:
 parts:
   mountain-tapir:
     plugin: python
-    python-version: python2
+    python-version: python3
     source: .
     stage-packages:
      - python
-     - python-tk
+     - python3-tk
     python-packages:
      - image
     after: [desktop-gtk2]
