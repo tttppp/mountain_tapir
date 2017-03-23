@@ -2,16 +2,21 @@
 
 usage() {
     echo "Usage: $0 [options]" 1>&2;
+    echo " -g: Skip the history entry and git commits/tags." 1>&2;
     echo " -r [patch|minor|major]: The type of update (default patch)." 1>&2;
     echo " -p (python versions): A comma separated list of versions to test against (default ALL)." 1>&2
     exit 1;
 }
 
+skipGit=false
 release="patch"
 pythonVersions="ALL"
 
-while getopts "p:r:" o; do
+while getopts "gp:r:" o; do
     case "${o}" in
+        g)
+            skipGit=true
+            ;;
         p)
             pythonVersions=${OPTARG}
             ;;
@@ -30,34 +35,39 @@ while getopts "p:r:" o; do
 done
 shift $((OPTIND-1))
 
-# Compute the new version number.
 lastVersion=`git tag | tail -1`
-major=`echo $lastVersion | sed 's|v\([0-9]*\)\.\([0-9]*\)\.\([0-9]*\)|\1|g'`
-minor=`echo $lastVersion | sed 's|v\([0-9]*\)\.\([0-9]*\)\.\([0-9]*\)|\2|g'`
-patch=`echo $lastVersion | sed 's|v\([0-9]*\)\.\([0-9]*\)\.\([0-9]*\)|\3|g'`
-if [[ "$release" == "major" ]]
+if $skipGit
 then
-  major=$(($major + 1))
-fi
-if [[ "$release" == "minor" ]]
-then
-  minor=$(($minor + 1))
-fi
-if [[ "$release" == "patch" ]]
-then
-  patch=$(($patch + 1))
-fi
-newVersion="$major.$minor.$patch"
+    # Compute the new version number.
+    major=`echo $lastVersion | sed 's|v\([0-9]*\)\.\([0-9]*\)\.\([0-9]*\)|\1|g'`
+    minor=`echo $lastVersion | sed 's|v\([0-9]*\)\.\([0-9]*\)\.\([0-9]*\)|\2|g'`
+    patch=`echo $lastVersion | sed 's|v\([0-9]*\)\.\([0-9]*\)\.\([0-9]*\)|\3|g'`
+    if [[ "$release" == "major" ]]
+    then
+      major=$(($major + 1))
+    fi
+    if [[ "$release" == "minor" ]]
+    then
+      minor=$(($minor + 1))
+    fi
+    if [[ "$release" == "patch" ]]
+    then
+      patch=$(($patch + 1))
+    fi
+    newVersion="$major.$minor.$patch"
 
-# Update HISTORY.rst
-scite HISTORY.rst
+    # Update HISTORY.rst
+    scite HISTORY.rst
 
-# Commit the changes:
-git add HISTORY.rst
-git commit -m "Changelog for upcoming release $newVersion."
+    # Commit the changes:
+    git add HISTORY.rst
+    git commit -m "Changelog for upcoming release $newVersion."
 
-# Update version number
-bumpversion "$release" || exit 1
+    # Update version number
+    bumpversion "$release" || exit 1
+else
+    newVersion=$lastVersion
+fi
 
 # Install the package again for local development, but with the new version number:
 

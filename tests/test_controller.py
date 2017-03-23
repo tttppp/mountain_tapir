@@ -107,7 +107,8 @@ class TestController(unittest.TestCase):
         mockModel.setRegionCount.assert_any_call(3)
         mockUIVars.regionsVar.set.assert_any_call(3)
         # Check that the preview is redrawn containing both existing images.
-        mockRedrawUsingImages.assert_any_call(set(['imageA', 'imageB']))
+        redrawImages = mockRedrawUsingImages.mock_calls[0][1][0]
+        self.assertEqual(set(redrawImages), set(['imageA', 'imageB']))
 
     def testRemoveTooManyRegions(self):
         """Check that trying to remove a region has no effect if there is only one."""
