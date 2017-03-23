@@ -2,6 +2,12 @@
 History
 =======
 
+1.0.4 (2017-03-23)
+------------------
+
+* Add icons for algorithm buttons.
+* Minor fix for shuffle for Python 3.
+
 1.0.3 (2017-02-22)
 ------------------
 
