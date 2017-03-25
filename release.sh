@@ -91,4 +91,10 @@ git push --tags
 #    Edit the release on GitHub (e.g. https://github.com/audreyr/cookiecutter/releases). Paste the release notes into the release's release page, and come up with a title for the release.
 
 # Create the snap and upload it.
-snapcraft clean mountain-tapir mountain-tapir-copy wrappers && snapcraft && snapcraft push "mountain-tapir_"$newVersion"_amd64.snap"
+snapcraft clean mountain-tapir mountain-tapir-copy wrappers
+snapcraft
+
+export PYTHONPATH=./prime/usr/lib/python3.5/
+./prime/usr/bin/python3 setup.py install
+
+snapcraft push "mountain-tapir_"$newVersion"_amd64.snap"
