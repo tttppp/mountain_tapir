@@ -25,6 +25,7 @@ except ImportError:
 
 import os
 from PIL import ImageTk
+from pkg_resources import resource_string
 
 from mountain_tapir.algorithm import Algorithm
 from mountain_tapir.tool import Tool
@@ -104,8 +105,8 @@ class Menu:
         :param controller: The main controller for the application."""
         algorithmButton = TK.Button(self.menuFrameA, text=label,
                                     command=lambda: controller.setAlgorithm(algorithm))
-        path = 'mountain_tapir' + os.sep + 'resources' + os.sep + resource
-        algorithmButton.image = ImageTk.PhotoImage(file=path)
+        imageBinary = resource_string('mountain_tapir.resources', resource)
+        algorithmButton.image = ImageTk.PhotoImage(data = imageBinary)
         algorithmButton.config(image=algorithmButton.image, width=26, height=26)
         algorithmButton.pack(side=TK.LEFT)
         return algorithmButton
