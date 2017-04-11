@@ -77,7 +77,8 @@ class OpenImageDialog(TK.Toplevel):
         :param resource: The file name of the image resource.
         :param action: The action to take when clicked."""
         button = TK.Button(self.browser, command=action)
-        image = self.__getImageObject(imagePath, (64, 50), 'openDialog')
+        imageFile = ImageFile(imagePath)
+        image = imageFile.getImageObject((64, 50), 'openDialog')
         if image is not None:
             button.image = ImageTk.PhotoImage(image)
             button.config(text=imageName, image=button.image, compound='top', width=64, height=64)
@@ -85,34 +86,6 @@ class OpenImageDialog(TK.Toplevel):
         else:
             self.__createNonImageButton('file.png', None, imageName, index)
         return button
-
-    def __getImageObject(self, fileName, dimensions, purpose):
-        """Return a :class:`PIL.Image` with the specified dimensions.
-
-        :param dimensions: An iterable pair - (width, height).
-        :param purpose: A string describing the purpose of the image. This is
-            used for logging.
-        """
-        try:
-            image = Image.open(fileName)
-        except IOError:
-            print('Error opening image for {0}'.format(purpose))
-            return None
-        originalDimensions = image.size
-        if originalDimensions[0] * dimensions[1] > originalDimensions[1] * dimensions[0]:
-            resizeWidth = int((originalDimensions[0] * dimensions[1]) // originalDimensions[1])
-            resizeHeight = dimensions[1]
-            resizeDimensions = (resizeWidth, resizeHeight)
-        else:
-            resizeWidth = dimensions[0]
-            resizeHeight = int((originalDimensions[1] * dimensions[0]) // originalDimensions[0])
-            resizeDimensions = (resizeWidth, resizeHeight)
-        image = image.resize(resizeDimensions, Image.ANTIALIAS)
-        middle = (image.size[0] // 2, image.size[1] // 2)
-        left = middle[0] - int(dimensions[0] // 2)
-        top = middle[1] - int(dimensions[1] // 2)
-        box = (left, top, left + dimensions[0], top + dimensions[1])
-        return image.crop(box)
 
     def ok(self, filePath):
         print('value is', filePath)
