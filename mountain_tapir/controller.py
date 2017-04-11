@@ -35,6 +35,7 @@ from random import randrange, sample
 from mountain_tapir.image_file import ImageFile
 from mountain_tapir.region_maker import RegionMaker
 from mountain_tapir.tool import Tool
+from mountain_tapir.open_image_dialog import OpenImageDialog
 
 
 def randColor():
@@ -183,13 +184,18 @@ class Controller:
 
     def clicked(self, canvas, region):
         if self.model.selectedTool == Tool.LOAD:
-            fileName = askopenfilename(parent=canvas, initialdir=self.model.getCurrentDirectory(),
-                                       title='Choose an image.')
-            if fileName == ():
+            print('###',self.model.getCurrentDirectory())
+            openImageDialog = OpenImageDialog(canvas, self.model.getCurrentDirectory())
+            canvas.wait_window(openImageDialog)
+            filePath = openImageDialog.filePath
+            print(filePath)
+            #filePath = askopenfilename(parent=canvas, initialdir=self.model.getCurrentDirectory(),
+            #                           title='Choose an image.')
+            if filePath == None:
                 print('Cancelled opening image')
                 return
-            self.model.setCurrentDirectory(path.dirname(fileName))
-            imageFile = ImageFile(fileName)
+            self.model.setCurrentDirectory(path.dirname(filePath))
+            imageFile = ImageFile(filePath)
             self.model.imageFiles.append(imageFile)
 
             self.recentImages.addImage(imageFile, self.selectPlaceTool)
