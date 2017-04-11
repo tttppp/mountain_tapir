@@ -51,11 +51,11 @@ class OpenImageDialog(TK.Toplevel):
             print(filenames)
             for dirName in dirNames:
                 dirPath = os.sep.join((currentDir, dirName))
-                self.__createNonImageButton('directory.png', lambda: self.__loadThumbnails(dirPath), dirName, index)
+                self.__createNonImageButton('directory.png', lambda dirPath=dirPath: self.__loadThumbnails(dirPath), dirName, index)
                 index += 1
             for filename in filenames:
                 imagePath = os.sep.join((currentDir, filename))
-                self.__createImageButton(imagePath, lambda: self.ok(imagePath), filename, index)
+                self.__createImageButton(imagePath, lambda imagePath=imagePath: self.ok(imagePath), filename, index)
                 index += 1
             break
 
