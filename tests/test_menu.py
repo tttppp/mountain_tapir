@@ -31,24 +31,32 @@ from mountain_tapir import menu
 
 
 class TestMenu(unittest.TestCase):
+    @mock.patch('mountain_tapir.menu.resource_string')
     @mock.patch('mountain_tapir.menu.os')
     @mock.patch('mountain_tapir.menu.ImageTk')
     @mock.patch('mountain_tapir.menu.TK')
-    def testInitialize(self, mockTK, mockImageTk, mockOs):
+    def testInitialize(self, mockTK, mockImageTk, mockOs, mockResourceString):
         """Test creating a new Menu object.
 
         This test mainly looks out for exceptions, but also checks that the right images are loaded for the buttons."""
         mockParent = mock.Mock(name='Parent')
         mockController = mock.Mock(name='Controller')
         mockOs.sep = '/'
+        mockResourceString.side_effect = ('imageA', 'imageB', 'imageC')
 
         # Call the method under test.
         menu.Menu(mockParent, mockController)
 
-        # Just check that the expected images are loaded, don't bother checking which buttons they're bound to.
-        mockImageTk.PhotoImage.assert_any_call(file='mountain_tapir/resources/algorithm_collage.png')
-        mockImageTk.PhotoImage.assert_any_call(file='mountain_tapir/resources/algorithm_grid.png')
-        mockImageTk.PhotoImage.assert_any_call(file='mountain_tapir/resources/algorithm_frame.png')
+        # Check that the images are loaded in the expected order.
+        self.assertEqual(mockResourceString.mock_calls, \
+            [mock.call('mountain_tapir.resources', 'algorithm_collage.png'), \
+             mock.call('mountain_tapir.resources', 'algorithm_grid.png'), \
+             mock.call('mountain_tapir.resources', 'algorithm_frame.png')], \
+            'Unexpected resources loaded for buttons.')
+        # Check that the images were loaded (but don't bother checking they end up on the right button).
+        mockImageTk.PhotoImage.assert_any_call(data = 'imageA')
+        mockImageTk.PhotoImage.assert_any_call(data = 'imageB')
+        mockImageTk.PhotoImage.assert_any_call(data = 'imageC')
 
 if __name__ == '__main__':
     import sys
