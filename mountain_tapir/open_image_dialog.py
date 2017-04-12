@@ -34,6 +34,9 @@ class OpenImageDialog(TK.Toplevel):
         self.parent = parent
         TK.Label(self, text='Select a image').pack()
 
+        self.currentDirVar = TK.StringVar(self)
+        TK.Entry(self, textvariable=self.currentDirVar).pack()
+
         self.browser = TK.Frame(self)
         self.__loadThumbnails(initialDir)
         self.browser.pack(side=TK.TOP, fill=TK.X)
@@ -44,16 +47,14 @@ class OpenImageDialog(TK.Toplevel):
         self.grab_set()
 
     def __loadThumbnails(self, currentDir):
-        print(currentDir)
+        self.currentDirVar.set(currentDir)
         index = 0
         for (_, dirNames, filenames) in os.walk(currentDir):
-            print(dirNames)
-            print(filenames)
-            for dirName in dirNames:
+            for dirName in sorted(dirNames):
                 dirPath = os.sep.join((currentDir, dirName))
                 self.__createNonImageButton('directory.png', lambda dirPath=dirPath: self.__loadThumbnails(dirPath), dirName, index)
                 index += 1
-            for filename in filenames:
+            for filename in sorted(filenames):
                 imagePath = os.sep.join((currentDir, filename))
                 self.__createImageButton(imagePath, lambda imagePath=imagePath: self.ok(imagePath), filename, index)
                 index += 1
