@@ -34,12 +34,14 @@ class OpenImageDialog(TK.Toplevel):
         self.parent = parent
         TK.Label(self, text='Select a image').pack()
 
+        self.navigateBar = TK.Frame(self)
         self.currentDirVar = TK.StringVar(self)
-        directoryEntry = TK.Entry(self, textvariable=self.currentDirVar)
-        directoryEntry.pack()
+        directoryEntry = TK.Entry(self.navigateBar, textvariable=self.currentDirVar)
+        directoryEntry.grid(row=0, column=0)
         directoryEntry.bind('<FocusOut>', self.__updateDirectory)
         directoryEntry.bind('<Return>', self.__updateDirectory)
         directoryEntry.bind('<KP_Enter>', self.__updateDirectory)
+        self.navigateBar.pack()
 
         self.browser = TK.Frame(self)
         self.__loadThumbnails(initialDir)
@@ -51,6 +53,11 @@ class OpenImageDialog(TK.Toplevel):
         self.grab_set()
 
     def __loadThumbnails(self, currentDir):
+        parentDirectory = currentDir.rsplit(os.sep, 1)[0]
+        upDirectory = self.__createButton(self.navigateBar, 'up_directory.png', lambda dirPath=parentDirectory: self.__loadThumbnails(dirPath))
+        upDirectory.config(image=upDirectory.image, width=26, height=26)
+        upDirectory.grid(row=0, column=1)
+
         for thumbnail in self.browser.winfo_children():
             thumbnail.destroy()
         self.currentDirVar.set(currentDir)
@@ -71,9 +78,7 @@ class OpenImageDialog(TK.Toplevel):
 
         :param resource: The file name of the image resource.
         :param action: The action to take when clicked."""
-        button = TK.Button(self.browser, command=action)
-        imageBinary = resource_string('mountain_tapir.resources', resource)
-        button.image = ImageTk.PhotoImage(data = imageBinary)
+        button = self.__createButton(self.browser, resource, action)
         button.config(text=name, image=button.image, compound='top', width=64, height=64)
         button.grid(row=index//8, column=index%8)
         return button
@@ -92,6 +97,12 @@ class OpenImageDialog(TK.Toplevel):
             button.grid(row=index//8, column=index%8)
         else:
             self.__createNonImageButton('file.png', None, imageName, index)
+        return button
+
+    def __createButton(self, parent, resource, action):
+        button = TK.Button(parent, command=action)
+        imageBinary = resource_string('mountain_tapir.resources', resource)
+        button.image = ImageTk.PhotoImage(data = imageBinary)
         return button
 
     def __updateDirectory(self, event):
