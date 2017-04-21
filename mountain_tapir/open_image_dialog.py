@@ -22,8 +22,12 @@ except ImportError:
     import Tkinter as TK
 
 import os
+import threading
 from PIL import Image, ImageTk
 from pkg_resources import resource_string
+# TODO: Refactor code to allow use of multiple processes rather than threads.
+from multiprocessing.dummy import Pool
+from collections import OrderedDict
 
 from mountain_tapir.image_file import ImageFile
 
@@ -67,10 +71,14 @@ class OpenImageDialog(TK.Toplevel):
                 dirPath = os.sep.join((currentDir, dirName))
                 self.__createNonImageButton('directory.png', lambda dirPath=dirPath: self.__loadThumbnails(dirPath), dirName, index)
                 index += 1
+            imageButtonMap = OrderedDict()
             for filename in sorted(filenames):
                 imagePath = os.sep.join((currentDir, filename))
-                self.__createImageButton(imagePath, lambda imagePath=imagePath: self.ok(imagePath), filename, index)
+                button = self.__createNonImageButton('file.png', lambda imagePath=imagePath: self.ok(imagePath), filename, index)
+                imageButtonMap[imagePath] = button
                 index += 1
+            t = self.ThumbnailLoader(imageButtonMap)
+            t.start()
             break
 
     def __createNonImageButton(self, resource, action, name, index):
@@ -83,22 +91,6 @@ class OpenImageDialog(TK.Toplevel):
         button.grid(row=index//8, column=index%8)
         return button
 
-    def __createImageButton(self, imagePath, action, imageName, index):
-        """Create a button for changing algorithm.
-
-        :param resource: The file name of the image resource.
-        :param action: The action to take when clicked."""
-        button = TK.Button(self.browser, command=action)
-        imageFile = ImageFile(imagePath)
-        image = imageFile.getImageObject((64, 50), 'openDialog')
-        if image is not None:
-            button.image = ImageTk.PhotoImage(image)
-            button.config(text=imageName, image=button.image, compound='top', width=64, height=64)
-            button.grid(row=index//8, column=index%8)
-        else:
-            self.__createNonImageButton('file.png', None, imageName, index)
-        return button
-
     def __createButton(self, parent, resource, action):
         button = TK.Button(parent, command=action)
         imageBinary = resource_string('mountain_tapir.resources', resource)
@@ -107,6 +99,29 @@ class OpenImageDialog(TK.Toplevel):
 
     def __updateDirectory(self, event):
         self.__loadThumbnails(self.currentDirVar.get())
+
+    class ThumbnailLoader(threading.Thread):
+        """A class to load the thumbnails and display them on the buttons."""
+        def __init__(self, imageButtonMap):
+            """:param imageButtonMap: A map from the image path to the button to display it on."""
+            threading.Thread.__init__(self)
+            self.imageButtonMap = imageButtonMap
+
+        def run(self):
+            """Start the background thread."""
+            pool = Pool()
+            pool.map(self.setThumbnail, self.imageButtonMap.items())
+
+        def setThumbnail(self, imageButtonPair):
+            """Try to load the image from the path and display it on the button.
+
+            :param imageButtonPair: A pair containing an image path and a button."""
+            imageFile = ImageFile(imageButtonPair[0])
+            image = imageFile.getImageObject((64, 50), 'openDialog')
+            if image is not None:
+                button = imageButtonPair[1]
+                button.image = ImageTk.PhotoImage(image)
+                button.config(image=button.image)
 
     def ok(self, filePath):
         print('value is', filePath)
