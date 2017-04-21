@@ -32,6 +32,9 @@ from collections import OrderedDict
 from mountain_tapir.image_file import ImageFile
 
 class OpenImageDialog(TK.Toplevel):
+    """A static map from imagePath to thumbnail."""
+    thumbnailCache = {}
+
     def __init__(self, parent, initialDir):
         TK.Toplevel.__init__(self, parent)
         self.transient(parent)
@@ -82,7 +85,7 @@ class OpenImageDialog(TK.Toplevel):
             break
 
     def __createNonImageButton(self, resource, action, name, index):
-        """Create a button for changing algorithm.
+        """Create a button with an image and a label below it.
 
         :param resource: The file name of the image resource.
         :param action: The action to take when clicked."""
@@ -116,8 +119,12 @@ class OpenImageDialog(TK.Toplevel):
             """Try to load the image from the path and display it on the button.
 
             :param imageButtonPair: A pair containing an image path and a button."""
-            imageFile = ImageFile(imageButtonPair[0])
-            image = imageFile.getImageObject((64, 50), 'openDialog')
+            imagePath = imageButtonPair[0]
+            if imagePath not in OpenImageDialog.thumbnailCache.keys():
+                imageFile = ImageFile(imagePath)
+                image = imageFile.getImageObject((64, 50), 'openDialog')
+                OpenImageDialog.thumbnailCache[imagePath] = image
+            image = OpenImageDialog.thumbnailCache[imagePath]
             if image is not None:
                 button = imageButtonPair[1]
                 button.image = ImageTk.PhotoImage(image)
