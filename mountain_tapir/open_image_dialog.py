@@ -23,7 +23,7 @@ except ImportError:
 
 import os
 import threading
-from PIL import Image, ImageTk
+from PIL import ImageTk
 from pkg_resources import resource_string
 # TODO: Refactor code to allow use of multiple processes rather than threads.
 from multiprocessing.dummy import Pool
@@ -50,16 +50,37 @@ class OpenImageDialog(TK.Toplevel):
         directoryEntry.bind('<KP_Enter>', self.__updateDirectory)
         self.navigateBar.pack()
 
-        self.browser = TK.Frame(self)
-        self.__loadThumbnails(initialDir)
-        self.browser.pack(side=TK.TOP, fill=TK.X)
+        browserCanvas = TK.Canvas(self, width=750, height=550)
+        self.browser = TK.Frame(browserCanvas)
+        browserScroll = TK.Scrollbar(self, orient=TK.VERTICAL, command=browserCanvas.yview)
+        browserCanvas.configure(yscrollcommand=browserScroll.set)
+        browserScroll.pack(side=TK.RIGHT, fill=TK.Y)
+        browserCanvas.pack(side=TK.LEFT, fill=TK.BOTH, expand=True)
+        browserCanvas.create_window(1, 0, window=self.browser, anchor=TK.NW)
+        self.browser.bind('<Configure>', lambda event, canvas=browserCanvas: browserCanvas.configure(scrollregion=browserCanvas.bbox(TK.ALL)))
 
-        #self.initial_focus = TK.Button(self, text='OK', command=self.ok).pack()
+        def mouseWheelHandler(event):
+            """Scrolling callback based on answers from this question:
+            http://stackoverflow.com/q/17355902/171296"""
+            if event.num == 5 or event.delta < 0:
+                browserCanvas.yview_scroll(1, 'units')
+            else:
+                browserCanvas.yview_scroll(-1, 'units')
+        browserCanvas.bind_all('<MouseWheel>', mouseWheelHandler)
+        browserCanvas.bind_all('<Button-4>', mouseWheelHandler)
+        browserCanvas.bind_all('<Button-5>', mouseWheelHandler)
+
+        self.__loadThumbnails(initialDir)
+
         self.bind('<Escape>', self.cancel)
+        self.protocol('WM_DELETE_WINDOW', self.tearDown)
         self.wait_visibility()
         self.grab_set()
 
     def __loadThumbnails(self, currentDir):
+        """Create buttons for all the files and folders in the current directory.
+
+        :param currentDir: The current directory."""
         parentDirectory = currentDir.rsplit(os.sep, 1)[0]
         upDirectory = self.__createButton(self.navigateBar, 'up_directory.png', lambda dirPath=parentDirectory: self.__loadThumbnails(dirPath))
         upDirectory.config(image=upDirectory.image, width=26, height=26)
@@ -72,19 +93,20 @@ class OpenImageDialog(TK.Toplevel):
         for (_, dirNames, filenames) in os.walk(currentDir):
             for dirName in sorted(dirNames):
                 dirPath = os.sep.join((currentDir, dirName))
-                self.__createNonImageButton('directory.png', lambda dirPath=dirPath: self.__loadThumbnails(dirPath), dirName, index)
+                self.__createImageButton('directory.png', lambda dirPath=dirPath: self.__loadThumbnails(dirPath), dirName, index)
                 index += 1
             imageButtonMap = OrderedDict()
             for filename in sorted(filenames):
                 imagePath = os.sep.join((currentDir, filename))
-                button = self.__createNonImageButton('file.png', lambda imagePath=imagePath: self.ok(imagePath), filename, index)
+                button = self.__createImageButton('file.png', lambda imagePath=imagePath: self.ok(imagePath), filename, index)
                 imageButtonMap[imagePath] = button
                 index += 1
+            # Load thumbnails of the actual images in the background.
             t = self.ThumbnailLoader(imageButtonMap)
             t.start()
             break
 
-    def __createNonImageButton(self, resource, action, name, index):
+    def __createImageButton(self, resource, action, name, index):
         """Create a button with an image and a label below it.
 
         :param resource: The file name of the image resource.
@@ -131,11 +153,18 @@ class OpenImageDialog(TK.Toplevel):
                 button.config(image=button.image)
 
     def ok(self, filePath):
-        print('value is', filePath)
+        """Set the path to the selected image and close the dialog."""
         self.filePath = filePath
-        self.parent.focus_set()
-        self.destroy()
+        self.tearDown()
 
     def cancel(self, event):
+        """Close the dialog without selecting an image."""
+        self.tearDown()
+
+    def tearDown(self):
+        """Return focus to the parent, close the dialog and unbind any global events."""
+        self.unbind_all('<MouseWheel>')
+        self.unbind_all('<Button-4>')
+        self.unbind_all('<Button-5>')
         self.parent.focus_set()
         self.destroy()
