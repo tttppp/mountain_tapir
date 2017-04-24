@@ -37,6 +37,7 @@ class OpenImageDialog(TK.Toplevel):
 
     def __init__(self, parent, initialDir):
         TK.Toplevel.__init__(self, parent)
+        self.filePath = None
         self.transient(parent)
         self.parent = parent
         TK.Label(self, text='Select a image').pack()
@@ -151,7 +152,11 @@ class OpenImageDialog(TK.Toplevel):
             if image is not None:
                 button = imageButtonPair[1]
                 button.image = ImageTk.PhotoImage(image)
-                button.config(image=button.image)
+                try:
+                    button.config(image=button.image)
+                except TK.TclError:
+                    # This might happen if the dialog has been closed.
+                    return
 
     def ok(self, filePath):
         """Set the path to the selected image and close the dialog."""
