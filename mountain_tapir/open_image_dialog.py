@@ -50,25 +50,25 @@ class OpenImageDialog(TK.Toplevel):
         directoryEntry.bind('<KP_Enter>', self.__updateDirectory)
         self.navigateBar.pack()
 
-        browserCanvas = TK.Canvas(self, width=750, height=550)
-        self.browser = TK.Frame(browserCanvas)
-        browserScroll = TK.Scrollbar(self, orient=TK.VERTICAL, command=browserCanvas.yview)
-        browserCanvas.configure(yscrollcommand=browserScroll.set)
+        self.browserCanvas = TK.Canvas(self, width=750, height=550)
+        self.browser = TK.Frame(self.browserCanvas)
+        browserScroll = TK.Scrollbar(self, orient=TK.VERTICAL, command=self.browserCanvas.yview)
+        self.browserCanvas.configure(yscrollcommand=browserScroll.set)
         browserScroll.pack(side=TK.RIGHT, fill=TK.Y)
-        browserCanvas.pack(side=TK.LEFT, fill=TK.BOTH, expand=True)
-        browserCanvas.create_window(1, 0, window=self.browser, anchor=TK.NW)
-        self.browser.bind('<Configure>', lambda event, canvas=browserCanvas: browserCanvas.configure(scrollregion=browserCanvas.bbox(TK.ALL)))
+        self.browserCanvas.pack(side=TK.LEFT, fill=TK.BOTH, expand=True)
+        self.browserCanvas.create_window(1, 0, window=self.browser, anchor=TK.NW)
+        self.browser.bind('<Configure>', lambda event, canvas=self.browserCanvas: canvas.configure(scrollregion=canvas.bbox(TK.ALL)))
 
         def mouseWheelHandler(event):
             """Scrolling callback based on answers from this question:
             http://stackoverflow.com/q/17355902/171296"""
             if event.num == 5 or event.delta < 0:
-                browserCanvas.yview_scroll(1, 'units')
+                self.browserCanvas.yview_scroll(1, 'units')
             else:
-                browserCanvas.yview_scroll(-1, 'units')
-        browserCanvas.bind_all('<MouseWheel>', mouseWheelHandler)
-        browserCanvas.bind_all('<Button-4>', mouseWheelHandler)
-        browserCanvas.bind_all('<Button-5>', mouseWheelHandler)
+                self.browserCanvas.yview_scroll(-1, 'units')
+        self.browserCanvas.bind_all('<MouseWheel>', mouseWheelHandler)
+        self.browserCanvas.bind_all('<Button-4>', mouseWheelHandler)
+        self.browserCanvas.bind_all('<Button-5>', mouseWheelHandler)
 
         self.__loadThumbnails(initialDir)
 
@@ -88,6 +88,7 @@ class OpenImageDialog(TK.Toplevel):
 
         for thumbnail in self.browser.winfo_children():
             thumbnail.destroy()
+        self.browserCanvas.yview_moveto(0)
         self.currentDirVar.set(currentDir)
         index = 0
         for (_, dirNames, filenames) in os.walk(currentDir):
