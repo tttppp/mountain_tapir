@@ -79,14 +79,20 @@ class OpenImageDialog(TK.Toplevel):
         self.wait_visibility()
         self.grab_set()
 
-    def __loadThumbnails(self, currentDir):
+    def __loadThumbnails(self, currentDir, clearCache = False):
         """Create buttons for all the files and folders in the current directory.
 
-        :param currentDir: The current directory."""
+        :param currentDir: The current directory.
+        :param clearCache: Whether to clear everything from the thumbnail cache or not."""
+        if clearCache:
+            OpenImageDialog.thumbnailCache = {}
         parentDirectory = currentDir.rsplit(os.sep, 1)[0]
         upDirectory = self.__createButton(self.navigateBar, 'up_directory.png', lambda dirPath=parentDirectory: self.__loadThumbnails(dirPath))
         upDirectory.config(image=upDirectory.image, width=26, height=26)
         upDirectory.grid(row=0, column=2)
+        refreshDirectory = self.__createButton(self.navigateBar, 'refresh.png', lambda dirPath=currentDir: self.__loadThumbnails(dirPath, True))
+        refreshDirectory.config(image=refreshDirectory.image, width=26, height=26)
+        refreshDirectory.grid(row=0, column=3)
 
         for thumbnail in self.browser.winfo_children():
             thumbnail.destroy()
@@ -144,6 +150,10 @@ class OpenImageDialog(TK.Toplevel):
             """Try to load the image from the path and display it on the button.
 
             :param imageButtonPair: A pair containing an image path and a button."""
+            button = imageButtonPair[1]
+            if not button.winfo_exists():
+                # This might happen if the refresh button has been pressed, or navigation has taken place.
+                return
             imagePath = imageButtonPair[0]
             if imagePath not in OpenImageDialog.thumbnailCache.keys():
                 imageFile = ImageFile(imagePath)
@@ -151,7 +161,6 @@ class OpenImageDialog(TK.Toplevel):
                 OpenImageDialog.thumbnailCache[imagePath] = image
             image = OpenImageDialog.thumbnailCache[imagePath]
             if image is not None:
-                button = imageButtonPair[1]
                 button.image = ImageTk.PhotoImage(image)
                 try:
                     button.config(image=button.image)
