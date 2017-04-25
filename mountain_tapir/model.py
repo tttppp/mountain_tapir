@@ -38,7 +38,7 @@ class Model:
         self.imageFiles = []
         self.regionToImageFile = defaultdict(lambda: None)
         self.regionToCanvas = defaultdict(lambda: None)
-        self.__currentDirectory = config.get('FILE', 'initialdirectory', os.path.expanduser('~'))
+        self.__currentDirectory = config.get('FILE', 'initialdirectory', self._getDefaultDirectory())
 
     def setCurrentDirectory(self, currentDirectory):
         """Set the directory to start looking for images in."""
@@ -47,6 +47,8 @@ class Model:
 
     def getCurrentDirectory(self):
         """Get the directory to start looking for images in."""
+        if not os.path.isdir(self.__currentDirectory):
+            self.__currentDirectory = self._getDefaultDirectory()
         return self.__currentDirectory
 
     def setWidth(self, width):
@@ -93,3 +95,6 @@ class Model:
     def getRegions(self):
         """Get the regions in the collage."""
         return self.__regions
+
+    def _getDefaultDirectory(self):
+        return os.path.expanduser('~')
