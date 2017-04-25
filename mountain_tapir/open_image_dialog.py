@@ -40,12 +40,13 @@ class OpenImageDialog(TK.Toplevel):
         self.filePath = None
         self.transient(parent)
         self.parent = parent
-        TK.Label(self, text='Select a image').pack()
 
         self.navigateBar = TK.Frame(self)
+        TK.Label(self.navigateBar, text='Select a image').grid(row=0, column=0)
         self.currentDirVar = TK.StringVar(self)
-        directoryEntry = TK.Entry(self.navigateBar, textvariable=self.currentDirVar)
-        directoryEntry.grid(row=0, column=0)
+        directoryEntry = TK.Entry(self.navigateBar, textvariable=self.currentDirVar, width=50)
+        self.navigateBar.grid_columnconfigure(1, weight=1)
+        directoryEntry.grid(row=0, column=1)
         directoryEntry.bind('<FocusOut>', self.__updateDirectory)
         directoryEntry.bind('<Return>', self.__updateDirectory)
         directoryEntry.bind('<KP_Enter>', self.__updateDirectory)
@@ -85,7 +86,7 @@ class OpenImageDialog(TK.Toplevel):
         parentDirectory = currentDir.rsplit(os.sep, 1)[0]
         upDirectory = self.__createButton(self.navigateBar, 'up_directory.png', lambda dirPath=parentDirectory: self.__loadThumbnails(dirPath))
         upDirectory.config(image=upDirectory.image, width=26, height=26)
-        upDirectory.grid(row=0, column=1)
+        upDirectory.grid(row=0, column=2)
 
         for thumbnail in self.browser.winfo_children():
             thumbnail.destroy()
