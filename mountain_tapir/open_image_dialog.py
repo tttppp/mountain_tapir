@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
+
 try:
     import tkinter as TK
 except ImportError:
@@ -30,6 +32,7 @@ from multiprocessing.dummy import Pool
 from collections import OrderedDict
 
 from mountain_tapir.image_file import ImageFile
+
 
 class OpenImageDialog(TK.Toplevel):
     """A static map from imagePath to thumbnail."""

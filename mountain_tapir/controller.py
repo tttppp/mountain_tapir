@@ -23,9 +23,9 @@ try:
 except ImportError:
     import Tkinter as TK
 try:
-    from tkinter.filedialog import askopenfilename, asksaveasfilename
+    from tkinter.filedialog import asksaveasfilename
 except ImportError:
-    from tkFileDialog import askopenfilename, asksaveasfilename
+    from tkFileDialog import asksaveasfilename
 
 from collections import defaultdict
 from os import path

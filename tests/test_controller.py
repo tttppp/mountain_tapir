@@ -312,9 +312,9 @@ class TestController(unittest.TestCase):
         self.assertEqual(dimensions, (100, 100))
 
     @mock.patch('mountain_tapir.controller.path')
-    @mock.patch('mountain_tapir.controller.askopenfilename')
+    @mock.patch('mountain_tapir.controller.OpenImageDialog')
     @mock.patch('mountain_tapir.controller.ImageFile')
-    def testLoad(self, mockImageFile, mockAskopenfilename, mockPath):
+    def testLoad(self, mockImageFile, mockOpenImageDialog, mockPath):
         """Check that clicking a region using the load tool causes file dialog to be launched."""
         mockModel = mock.Mock(name='mockModel')
         mockModel.selectedTool = Tool.LOAD
@@ -323,7 +323,7 @@ class TestController(unittest.TestCase):
         region = (10, 20, 30, 40)
         c = controller.Controller(mockModel, None)
         mockRecentImages = c.recentImages = mock.Mock(name='mockRecentImages')
-        mockAskopenfilename.return_value = 'newDir/Picture1.jpg'
+        mockOpenImageDialog.return_value.filePath = 'newDir/Picture1.jpg'
         mockPath.dirname.return_value = 'newDir'
         mockImageFile.return_value = 'imageFile'
         mockSelectPlaceTool = c.selectPlaceTool = mock.Mock(name='mockSelectPlaceTool')
@@ -332,15 +332,16 @@ class TestController(unittest.TestCase):
         # Call the method under test.
         c.clicked(mockCanvas, region)
 
-        mockAskopenfilename.assert_any_call(parent=mockCanvas, initialdir='oldDir', title='Choose an image.')
+        mockOpenImageDialog.assert_any_call(mockCanvas, 'oldDir')
         mockModel.setCurrentDirectory.assert_called_with('newDir')
+        mockImageFile.assert_called_with('newDir/Picture1.jpg')
         mockRecentImages.addImage.assert_any_call('imageFile', mockSelectPlaceTool)
         mockPutImageInPreviewRegion.assert_any_call('imageFile', mockCanvas, region)
 
     @mock.patch('mountain_tapir.controller.path')
-    @mock.patch('mountain_tapir.controller.askopenfilename')
+    @mock.patch('mountain_tapir.controller.OpenImageDialog')
     @mock.patch('mountain_tapir.controller.ImageFile')
-    def testCancelLoad(self, mockImageFile, mockAskopenfilename, mockPath):
+    def testCancelLoad(self, mockImageFile, mockOpenImageDialog, mockPath):
         """Check that cancelling loading into a region doesn't cause an exception."""
         mockModel = mock.Mock(name='mockModel')
         mockModel.selectedTool = Tool.LOAD
@@ -349,13 +350,13 @@ class TestController(unittest.TestCase):
         region = (10, 20, 30, 40)
         c = controller.Controller(mockModel, None)
         mockRecentImages = c.recentImages = mock.Mock(name='mockRecentImages')
-        mockAskopenfilename.return_value = ()
+        mockOpenImageDialog.return_value.filePath = None
         mockPutImageInPreviewRegion = c.putImageInPreviewRegion = mock.Mock(name='mockPutImageInPreviewRegion')
 
         # Call the method under test.
         c.clicked(mockCanvas, region)
 
-        mockAskopenfilename.assert_any_call(parent=mockCanvas, initialdir='oldDir', title='Choose an image.')
+        mockOpenImageDialog.assert_any_call(mockCanvas, 'oldDir')
         self.assertEqual(len(mockModel.setCurrentDirectory.mock_calls), 0, 'Unexpected call to setCurrentDirectory')
         self.assertEqual(len(mockRecentImages.addImage.mock_calls), 0, 'Unexpected call to addImage')
         self.assertEqual(len(mockPutImageInPreviewRegion.mock_calls), 0, 'Unexpected call to putImageInPreviewRegion')
