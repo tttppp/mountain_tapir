@@ -44,12 +44,36 @@ class TestOpenImageDialog(unittest.TestCase):
     def testInitialize(self, mockTK, mockImageTk, mockOs, mockResourceString, mockTransient, mockLoadThumbnails,
                        mockBind, mockProtocol, mockWaitVisibility, mockGrabSet):
         """Test creating a new OpenImageDialog object."""
-
         # Call the method under test.
-        o = open_image_dialog.OpenImageDialog('parent', 'initialDir')
+        open_image_dialog.OpenImageDialog('parent', 'initialDir')
 
         mockTransient.assert_any_call('parent')
         mockLoadThumbnails.assert_any_call('initialDir')
+
+    @mock.patch('mountain_tapir.open_image_dialog.OpenImageDialog._OpenImageDialog__createImageButton')
+    @mock.patch('mountain_tapir.open_image_dialog.OpenImageDialog.grab_set')
+    @mock.patch('mountain_tapir.open_image_dialog.OpenImageDialog.wait_visibility')
+    @mock.patch('mountain_tapir.open_image_dialog.OpenImageDialog.protocol')
+    @mock.patch('mountain_tapir.open_image_dialog.OpenImageDialog.bind')
+    @mock.patch('mountain_tapir.open_image_dialog.OpenImageDialog.transient')
+    @mock.patch('mountain_tapir.open_image_dialog.resource_string')
+    @mock.patch('mountain_tapir.open_image_dialog.os')
+    @mock.patch('mountain_tapir.open_image_dialog.ImageTk')
+    @mock.patch('mountain_tapir.open_image_dialog.TK')
+    def testLoadThumbnails(self, mockTK, mockImageTk, mockOs, mockResourceString, mockTransient, mockBind, mockProtocol,
+                           mockWaitVisibility, mockGrabSet, mockCreateImageButton):
+        """Test the loadThumbnails method results in buttons for files and folders loaded in the correct order."""
+        mockOs.walk.return_value = (('ignored', ['dirB', 'dirA'], ['fileA', 'fileB']),)
+        mockOs.sep = '/'
+
+        # This calls the method under test.
+        o = open_image_dialog.OpenImageDialog('parent', 'initialDir')
+
+        mockOs.walk.assert_any_call('initialDir')
+        actualParams = (map(lambda c: c[1][:1] + c[1][2:], mockCreateImageButton.mock_calls))
+        expectedParams = [('directory.png', 'dirA', 0), ('directory.png', 'dirB', 1),
+                          ('file.png', 'fileA', 2), ('file.png', 'fileB', 3)]
+        self.assertEqual(actualParams, expectedParams)
 
 if __name__ == '__main__':
     import sys
