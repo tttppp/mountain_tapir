@@ -70,7 +70,7 @@ class TestOpenImageDialog(unittest.TestCase):
         o = open_image_dialog.OpenImageDialog('parent', 'initialDir')
 
         mockOs.walk.assert_any_call('initialDir')
-        actualParams = (map(lambda c: c[1][:1] + c[1][2:], mockCreateImageButton.mock_calls))
+        actualParams = list(map(lambda c: c[1][:1] + c[1][2:], mockCreateImageButton.mock_calls))
         expectedParams = [('directory.png', 'dirA', 0), ('directory.png', 'dirB', 1),
                           ('file.png', 'fileA', 2), ('file.png', 'fileB', 3)]
         self.assertEqual(actualParams, expectedParams)
