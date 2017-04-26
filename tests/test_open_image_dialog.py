@@ -67,7 +67,7 @@ class TestOpenImageDialog(unittest.TestCase):
         mockOs.sep = '/'
 
         # This calls the method under test.
-        o = open_image_dialog.OpenImageDialog('parent', 'initialDir')
+        open_image_dialog.OpenImageDialog('parent', 'initialDir')
 
         mockOs.walk.assert_any_call('initialDir')
         actualParams = list(map(lambda c: c[1][:1] + c[1][2:], mockCreateImageButton.mock_calls))

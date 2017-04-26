@@ -187,7 +187,7 @@ class Controller:
             openImageDialog = OpenImageDialog(canvas, self.model.getCurrentDirectory())
             canvas.wait_window(openImageDialog)
             filePath = openImageDialog.filePath
-            if filePath == None:
+            if filePath is None:
                 print('Cancelled opening image')
                 return
             self.model.setCurrentDirectory(path.dirname(filePath))

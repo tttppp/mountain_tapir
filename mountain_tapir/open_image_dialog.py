@@ -62,7 +62,8 @@ class OpenImageDialog(TK.Toplevel):
         browserScroll.pack(side=TK.RIGHT, fill=TK.Y)
         self.browserCanvas.pack(side=TK.LEFT, fill=TK.BOTH, expand=True)
         self.browserCanvas.create_window(1, 0, window=self.browser, anchor=TK.NW)
-        self.browser.bind('<Configure>', lambda event, canvas=self.browserCanvas: canvas.configure(scrollregion=canvas.bbox(TK.ALL)))
+        self.browser.bind('<Configure>', lambda event,
+                          canvas=self.browserCanvas: canvas.configure(scrollregion=canvas.bbox(TK.ALL)))
 
         def mouseWheelHandler(event):
             """Scrolling callback based on answers from this question:
@@ -82,7 +83,7 @@ class OpenImageDialog(TK.Toplevel):
         self.wait_visibility()
         self.grab_set()
 
-    def __loadThumbnails(self, currentDir, clearCache = False):
+    def __loadThumbnails(self, currentDir, clearCache=False):
         """Create buttons for all the files and folders in the current directory.
 
         :param currentDir: The current directory.
@@ -90,10 +91,12 @@ class OpenImageDialog(TK.Toplevel):
         if clearCache:
             OpenImageDialog.thumbnailCache = {}
         parentDirectory = currentDir.rsplit(os.sep, 1)[0]
-        upDirectory = self.__createButton(self.navigateBar, 'up_directory.png', lambda dirPath=parentDirectory: self.__loadThumbnails(dirPath))
+        upDirectory = self.__createButton(self.navigateBar, 'up_directory.png',
+                                          lambda dirPath=parentDirectory: self.__loadThumbnails(dirPath))
         upDirectory.config(image=upDirectory.image, width=26, height=26)
         upDirectory.grid(row=0, column=2)
-        refreshDirectory = self.__createButton(self.navigateBar, 'refresh.png', lambda dirPath=currentDir: self.__loadThumbnails(dirPath, True))
+        refreshDirectory = self.__createButton(self.navigateBar, 'refresh.png',
+                                               lambda dirPath=currentDir: self.__loadThumbnails(dirPath, True))
         refreshDirectory.config(image=refreshDirectory.image, width=26, height=26)
         refreshDirectory.grid(row=0, column=3)
 
@@ -105,12 +108,14 @@ class OpenImageDialog(TK.Toplevel):
         for (_, dirNames, filenames) in os.walk(currentDir):
             for dirName in sorted(dirNames):
                 dirPath = os.sep.join((currentDir, dirName))
-                self.__createImageButton('directory.png', lambda dirPath=dirPath: self.__loadThumbnails(dirPath), dirName, index)
+                self.__createImageButton('directory.png',
+                                         lambda dirPath=dirPath: self.__loadThumbnails(dirPath), dirName, index)
                 index += 1
             imageButtonMap = OrderedDict()
             for filename in sorted(filenames):
                 imagePath = os.sep.join((currentDir, filename))
-                button = self.__createImageButton('file.png', lambda imagePath=imagePath: self.ok(imagePath), filename, index)
+                button = self.__createImageButton('file.png',
+                                                  lambda imagePath=imagePath: self.ok(imagePath), filename, index)
                 imageButtonMap[imagePath] = button
                 index += 1
             # Load thumbnails of the actual images in the background.
@@ -125,13 +130,13 @@ class OpenImageDialog(TK.Toplevel):
         :param action: The action to take when clicked."""
         button = self.__createButton(self.browser, resource, action)
         button.config(text=name, image=button.image, compound='top', width=64, height=64)
-        button.grid(row=index//8, column=index%8)
+        button.grid(row=index // 8, column=index % 8)
         return button
 
     def __createButton(self, parent, resource, action):
         button = TK.Button(parent, command=action)
         imageBinary = resource_string('mountain_tapir.resources', resource)
-        button.image = ImageTk.PhotoImage(data = imageBinary)
+        button.image = ImageTk.PhotoImage(data=imageBinary)
         return button
 
     def __updateDirectory(self, event):

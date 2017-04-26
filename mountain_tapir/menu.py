@@ -23,7 +23,6 @@ try:
 except ImportError:
     import Tkinter as TK
 
-import os
 from PIL import ImageTk
 from pkg_resources import resource_string
 
@@ -106,7 +105,7 @@ class Menu:
         algorithmButton = TK.Button(self.menuFrameA, text=label,
                                     command=lambda: controller.setAlgorithm(algorithm))
         imageBinary = resource_string('mountain_tapir.resources', resource)
-        algorithmButton.image = ImageTk.PhotoImage(data = imageBinary)
+        algorithmButton.image = ImageTk.PhotoImage(data=imageBinary)
         algorithmButton.config(image=algorithmButton.image, width=26, height=26)
         algorithmButton.pack(side=TK.LEFT)
         return algorithmButton
