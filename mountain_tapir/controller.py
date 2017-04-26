@@ -184,13 +184,9 @@ class Controller:
 
     def clicked(self, canvas, region):
         if self.model.selectedTool == Tool.LOAD:
-            print('###',self.model.getCurrentDirectory())
             openImageDialog = OpenImageDialog(canvas, self.model.getCurrentDirectory())
             canvas.wait_window(openImageDialog)
             filePath = openImageDialog.filePath
-            print(filePath)
-            #filePath = askopenfilename(parent=canvas, initialdir=self.model.getCurrentDirectory(),
-            #                           title='Choose an image.')
             if filePath == None:
                 print('Cancelled opening image')
                 return
