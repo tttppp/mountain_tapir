@@ -35,9 +35,13 @@ while getopts "gp:r:" o; do
 done
 shift $((OPTIND-1))
 
+echo $skipGit
+
 lastVersion=`git tag | tail -1`
 if $skipGit
 then
+    newVersion=$lastVersion
+else
     # Compute the new version number.
     major=`echo $lastVersion | sed 's|v\([0-9]*\)\.\([0-9]*\)\.\([0-9]*\)|\1|g'`
     minor=`echo $lastVersion | sed 's|v\([0-9]*\)\.\([0-9]*\)\.\([0-9]*\)|\2|g'`
@@ -65,8 +69,6 @@ then
 
     # Update version number
     bumpversion "$release" || exit 1
-else
-    newVersion=$lastVersion
 fi
 
 # Install the package again for local development, but with the new version number:
@@ -92,9 +94,11 @@ git push --tags
 
 # Create the snap and upload it.
 snapcraft clean mountain-tapir mountain-tapir-copy wrappers
-snapcraft
+snapcraft prime
 
 export PYTHONPATH=./prime/usr/lib/python3.5/
 ./prime/usr/bin/python3 setup.py install
+
+snapcraft snap
 
 snapcraft push "mountain-tapir_"$newVersion"_amd64.snap"
