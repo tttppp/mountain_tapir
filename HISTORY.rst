@@ -2,6 +2,11 @@
 History
 =======
 
+1.1.0 (2017-04-27)
+------------------
+
+* New open image dialog containing preview thumbnails.
+
 1.0.4 (2017-03-23)
 ------------------
 
