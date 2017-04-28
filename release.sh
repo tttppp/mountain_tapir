@@ -101,4 +101,5 @@ export PYTHONPATH=./prime/usr/lib/python3.5/
 
 snapcraft snap
 
-snapcraft push "mountain-tapir_"$newVersion"_amd64.snap"
+versionWithoutV=`echo $newVersion | sed "s|v||g"`
+snapcraft push "mountain-tapir_"$versionWithoutV"_amd64.snap"
