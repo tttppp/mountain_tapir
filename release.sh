@@ -49,10 +49,13 @@ else
     if [[ "$release" == "major" ]]
     then
       major=$(($major + 1))
+      minor=0
+      patch=0
     fi
     if [[ "$release" == "minor" ]]
     then
       minor=$(($minor + 1))
+      patch=0
     fi
     if [[ "$release" == "patch" ]]
     then
