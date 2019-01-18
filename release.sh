@@ -84,8 +84,8 @@ tox -e "$pythonVersions" || exit 1
 
 # Release on PyPI by uploading both sdist and wheel:
 
-python setup.py sdist upload
-python setup.py bdist_wheel upload
+python3 setup.py sdist upload
+python3 setup.py bdist_wheel upload
 
 #    Push:
 git push origin HEAD:master
@@ -96,13 +96,7 @@ git push --tags
 #    Edit the release on GitHub (e.g. https://github.com/audreyr/cookiecutter/releases). Paste the release notes into the release's release page, and come up with a title for the release.
 
 # Create the snap and upload it.
-snapcraft clean mountain-tapir mountain-tapir-copy wrappers
-snapcraft prime
-
-export PYTHONPATH=./prime/usr/lib/python3.5/
-./prime/usr/bin/python3 setup.py install
-
-snapcraft snap
+snapcraft cleanbuild
 
 versionWithoutV=`echo $newVersion | sed "s|v||g"`
-snapcraft push "mountain-tapir_"$versionWithoutV"_amd64.snap"
+snapcraft push "mountain-tapir_"$versionWithoutV"_amd64.snap" --release beta

@@ -50,7 +50,7 @@ setup(
         'mountain_tapir',
     ],
     package_dir={'mountain_tapir': 'mountain_tapir'},
-    package_data={'mountain_tapir': ['resources/*.png']},
+    package_data={'mountain_tapir': ['resources/*.png', 'resources/*.py']},
     include_package_data=True,
     install_requires=requirements,
     license='GPLv3+',
