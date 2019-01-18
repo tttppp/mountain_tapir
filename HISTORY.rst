@@ -2,6 +2,11 @@
 History
 =======
 
+1.1.1 (2019-01-18)
+------------------
+
+* Fix pypi image to include __init__.py in resources directory.
+
 1.1.0 (2017-04-27)
 ------------------
 
