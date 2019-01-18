@@ -2,6 +2,11 @@
 History
 =======
 
+1.1.2 (2019-01-18)
+------------------
+
+* New attempt to include __init__.py in pypi distributions.
+
 1.1.1 (2019-01-18)
 ------------------
 
