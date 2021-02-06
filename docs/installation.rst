@@ -8,9 +8,10 @@ As a `snap <https://uappexplorer.com/app/mountain-tapir.tttppp>`_::
 
     $ snap install mountain-tapir
 
-At the command line::
+Using apt and pip (sudo is required on some versions of Linux)::
 
-    $ easy_install mountain_tapir
+    $ apt install python3-pip python3-pil.imagetk
+    $ pip3 install mountain_tapir
 
 Or, if you have virtualenvwrapper installed::
 
